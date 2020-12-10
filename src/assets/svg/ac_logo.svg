@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="114px" height="78px" viewBox="0 0 114 78" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.1 (78136) - https://sketchapp.com -->
+    <title>Group 14</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0 0.0177 28.2899 0.0177 28.2899 28.3077 0 28.3077"></polygon>
+    </defs>
+    <g id="更新开屏" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-14">
+            <path d="M113.14,24.5527 L99,38.7027 L84.86,52.8427 L70.71,66.9827 L62.94,74.7617 C59.42,78.2727 53.72,78.2727 50.21,74.7617 L42.43,66.9827 L37.48,62.0327 C40.21,64.7617 44.65,64.7617 47.38,62.0327 L56.57,52.8427 L70.71,38.7027 L84.86,24.5527 L99,10.4127 L113.14,24.5527 Z" id="Fill-1" fill="#4FB3E6"></path>
+            <path d="M56.5697,52.8423 L47.3807,62.0323 C44.6497,64.7623 40.2097,64.7623 37.4797,62.0323 L28.2897,52.8423 L42.4297,38.7023 L56.5697,52.8423 Z" id="Fill-3" fill="#1F8EC4"></path>
+            <g id="Group-7" transform="translate(0.000000, 10.395000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Clip-6"></g>
+                <polygon id="Fill-5" fill="#1F8EC4" mask="url(#mask-2)" points="28.2899 14.1577 14.1499 28.3077 14.1399 28.3077 -0.0001 14.1577 14.1399 0.0177"></polygon>
+            </g>
+            <path d="M75.66,15.3628 C72.93,12.6328 68.5,12.6328 65.76,15.3628 L56.57,24.5528 L42.43,38.7028 L14.15,66.9828 L0,52.8418 L14.14,38.7028 L14.15,38.7028 L28.29,24.5528 L50.21,2.6328 C53.72,-0.8772 59.42,-0.8772 62.94,2.6328 L70.71,10.4128 L75.66,15.3628 Z" id="Fill-8" fill="#4FB3E6"></path>
+            <path d="M84.8597,24.5527 L70.7097,38.7027 L56.5697,24.5527 L65.7597,15.3627 C68.4997,12.6327 72.9297,12.6327 75.6597,15.3627 L84.8597,24.5527 Z" id="Fill-10" fill="#1F8EC4"></path>
+            <polygon id="Fill-12" fill="#1F8EC4" points="113.14 52.8423 99 66.9833 84.86 52.8423 99 38.7023"></polygon>
+        </g>
+    </g>
+</svg>
