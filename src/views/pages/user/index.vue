@@ -6,6 +6,9 @@
         <el-button size="mini" type="primary" @click="updateItem(scope.row)">重置密码</el-button>          
         <el-button size="mini" type="danger" @click="deleteItem(scope.row)">删除</el-button>
       </template>   
+      <template #update_at="scope">
+        {{ dayjs(scope.row).format()}}
+      </template>
     </j-table>
   </div>
 </template>
@@ -14,6 +17,10 @@
 <script>
 import { ref, reactive, toRefs, getCurrentInstance, onMounted, defineAsyncComponent, computed } from 'vue'
 import jTable from '../../../components/global/j-table.vue'
+
+var dayjs = require('dayjs')
+
+console.log(dayjs(1605518744860).format())
 
 export default {
     name: 'User',
@@ -31,7 +38,7 @@ export default {
         {label: '邮箱', key: 'email'},
         {label: '描述', key: 'remark'},
         {label: '状态', key: 'status'},
-        {label: '更新时间', key: 'update_at'},
+        {label: '更新时间', key: 'update_at', width: 220},
         {label: '操作', key: 'edit', width: 250},
       ])
       
@@ -46,7 +53,7 @@ export default {
         })
       }
 
-      return { get, userList, columns }
+      return { get, userList, columns, dayjs }
     }
 }
 </script>
