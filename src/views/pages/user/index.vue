@@ -32,7 +32,7 @@ export default {
         {label: '描述', key: 'remark'},
         {label: '状态', key: 'status'},
         {label: '更新时间', key: 'update_at'},
-        {label: '操作', key: 'edit'},
+        {label: '操作', key: 'edit', width: 250},
       ])
       
       get()

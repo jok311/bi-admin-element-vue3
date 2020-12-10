@@ -7,7 +7,10 @@
         <el-table-column
           v-if="item.hidden ? false : true"
           :label="item.label"
+          :fit="true"
           :key="item.key"
+          :prop="item.key"
+          :min-width="item.width ? item.width : width"
           v-bind="$attrs"
         >
           <template #default="scope">
@@ -36,6 +39,10 @@ export default {
         return []
       }
     },
+    width: {
+      type: Number,
+      default: 150
+    }
   },
   setup(props) {
     // watch( 
