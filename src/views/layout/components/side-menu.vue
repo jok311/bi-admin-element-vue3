@@ -91,10 +91,12 @@ export default {
   setup(props) {
     const { ctx } = getCurrentInstance();
     let isCollapse = ref(true);
+    let defaultOpeneds = ref('')
     
     //is_active
     const route = ctx.$root.$route
-    const defaultOpeneds = computed(() => route.fullPath )
+
+
 
     function handleOpen(key, keyPath) {
       // console.log(key, keyPath);
@@ -103,15 +105,15 @@ export default {
       // console.log(key, keyPath);
     }
 
-
-    // watch(
-    //   () => ctx.$root.$route, 
-    //   val => {
-    //     console.log(val.fullPath, 109)
-    //     defaultOpeneds.value = val.fullPath
-    //   },
-    //   { immediate: true, deep: true },      
-    // );    
+    //路由内部跳转的时候无法computed到变化
+    // const defaultOpeneds = computed(() => route.fullPath ) 
+    watch(
+      () => ctx.$root.$route.fullPath, 
+      val => {
+        defaultOpeneds.value = val
+      },
+      { immediate: true, deep: true },      
+    );    
 
     return { isCollapse, handleOpen, handleClose, defaultOpeneds };
   },
