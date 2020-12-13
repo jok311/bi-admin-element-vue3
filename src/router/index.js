@@ -138,6 +138,17 @@ const router = createRouter({
         },
       ]
     },
+    {
+      component: Layout,
+      children: [
+        {
+          path: '/vue-grid-out/index',
+          component: () => import('../views/pages/vue-grid-out/index.vue'),
+          name: 'user',
+          meta: { title: 'user', affix: true }
+        },
+      ]
+    },
 
   ]
 })

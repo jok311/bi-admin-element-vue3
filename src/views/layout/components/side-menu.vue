@@ -30,6 +30,12 @@
           <span>user-index</span>
       </template>        
     </el-menu-item>    
+    <el-menu-item index="/vue-drag-resize/index">
+      <template v-slot:title>
+          <i class="el-icon-menu"></i>
+          <span>vue-drag-resize</span>
+      </template>        
+    </el-menu-item>    
 
     <el-submenu index="1-4">
       <template v-slot:title>

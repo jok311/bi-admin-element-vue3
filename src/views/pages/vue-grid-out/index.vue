@@ -29,13 +29,17 @@
 <script>
 import { reactive } from "vue";
 // import VueGridLayout from "vue-grid-layout";
-// import VueGridLayout from './components/index.js'
+// import VueGridLayout from './vue-grid-layout.umd.min.js'
+
+
+// var GridLayout = VueGridLayout.GridLayout;
+// var GridItem = VueGridLayout.GridItem;
 
 export default {
-  components: {
-    // GridLayout: VueGridLayout.GridLayout,
-    // GridItem: VueGridLayout.GridItem,
-  },
+  // components: {
+  //     GridLayout: VueGridLayout.GridLayout,
+  //     GridItem: VueGridLayout.GridItem
+  // },
   data() {
     return {
       draggable: true,

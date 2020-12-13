@@ -2,14 +2,14 @@
     <div id="app">
 <div>
   <vue-resize-sensor @resize="onResize">
-      <div style="height: 72px;">resize</div>
-      <div style="height: 72px;">resize</div>
-      <div style="height: 72px;">resize</div>
-      <div style="height: 72px;">resize</div>
-      <div style="height: 72px;">resize</div>
-      <div style="height: 72px;">resize</div>
-      <div style="height: 72px;">resize</div>
-      <div style="height: 72px;">resize</div>
+      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
+      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
+      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
+      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
+      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
+      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
+      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
+      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
   </vue-resize-sensor>
   
 </div>

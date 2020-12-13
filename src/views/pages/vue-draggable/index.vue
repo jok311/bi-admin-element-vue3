@@ -6,7 +6,9 @@
         v-for="element in list"
         :key="element.name"
       >
-        {{ element.name }}
+        <div style="height: 100px; backgroud-color: blue;">
+          {{ element.name }}
+        </div>
       </div>
     </draggable>
 
