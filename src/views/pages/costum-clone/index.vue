@@ -1,6 +1,5 @@
 <template>
   <div class="costum-clone-box">
-        
     <div class="col-3">
       <h3>拖拽到右侧复制</h3>
       <draggable
@@ -15,38 +14,79 @@
       </draggable>
     </div>
 
-    <div class="col-3">
+    <div class="col-3" ref="groupList">
       <h3>展示box</h3>
       <draggable
         class="dragArea list-group list-group-right"
+        ref="groupRight"
         :list="list2"
         v-bind="dragOptions"
         group="people"
         @end="log"
       >
-      <transition-group type="transition">
-        <div class="list-group-item" v-for="element in list2" :key="element.id">
-          {{ element.name }}
-        </div>
-      </transition-group>        
+        <transition-group type="transition">
+
+          <div
+            class="list-group-item"
+            v-for="element in list2"
+            :key="element.id"
+          >
+            {{ element.name }}
+          </div>
+        </transition-group>
       </draggable>
     </div>
-
-
   </div>
 </template>
 
 <script>
-import { readonly } from 'vue'
+import { ref, readonly, onMounted, getCurrentInstance } from 'vue'
 import { VueDraggableNext } from "vue-draggable-next";
+import 'vue-resize/dist/vue-resize.css'
+import VueResize from 'vue-resize'
+
+
 let idGlobal = 8;
 export default {
   name: "custom-clone",
   display: "Custom Clone",
   order: 3,
   components: {
-    draggable: VueDraggableNext
+    draggable: VueDraggableNext,
+    VueResize
   },
+
+  setup(props, { refs }) {
+
+    const ctx = getCurrentInstance()
+
+    console.log(refs)
+
+    const groupRight = ref(null)
+
+    
+
+    function handleResize ({ width, height }) {
+      console.log('resized', width, height)
+    }
+
+    const myObserver = new ResizeObserver(entries => {
+    // 注意，entres是个数组，数组项为每个需要监听的DOM节点
+      entries.forEach(entry => {
+        console.log('大小位置 contentRect', entry.contentRect)
+        console.log('监听的DOM target', entry.target)
+      })
+    })    
+
+    onMounted( () => {
+      // console.log(vm.$refs)
+      // myObserver.observe()
+      console.log(groupRight.value, 8888)
+    })
+
+    return { handleResize, groupRight }
+  },
+
   data() {
     return {
       list1: [
@@ -81,7 +121,7 @@ export default {
         disabled: false,
         ghostClass: "ghost"
       };
-    }    
+    }
   },
 
   methods: {
@@ -106,7 +146,7 @@ export default {
   height 100vh
   padding 0 4px
   .col-3
-    width 50%  
+    width 50%
     .list-group-left
       // display flex
     .list-group-right
@@ -114,18 +154,28 @@ export default {
       width 100%
       height 85vh
       border 1px solid #eee
+      resize both
+      overflow auto      
       .list-group-item
         display inline-block
+        min-width 100px
+        min-height 100px
+        width 33%
+        // border 2px solid red
+        // padding 10px 40px
+        // width 300px
+        resize both
+        overflow auto
     .list-group
       .list-group-item
-        width 150px
+        // width 150px
         height 72px
         margin 0 2px 4px 0
         text-align center
         color #fff
-        background rgba(230,75, 77, 1)
+        // background rgba(230,75, 77, 1)
+        background #f3f4f5
 </style>
-
 
 <style lang="stylus">
 

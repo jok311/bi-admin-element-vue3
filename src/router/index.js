@@ -144,8 +144,8 @@ const router = createRouter({
         {
           path: '/vue-grid-out/index',
           component: () => import('../views/pages/vue-grid-out/index.vue'),
-          name: 'user',
-          meta: { title: 'user', affix: true }
+          name: 'vue-grid-out',
+          meta: { title: 'vue-grid-out', affix: true }
         },
       ]
     },
