@@ -1,21 +1,40 @@
 <template>
-<div class="hello-world-box" ref="helloBox">
-  <h1>{{ msg }}</h1>
-  <button @click="count++">count is: {{ count }}</button>
-  <p class="edit-box">
-    Edit <code>components/HelloWorld.vue</code> to test hot module
-    replacement.
-  </p>
+  <div
+    ref="helloBox"
+    class="hello-world-box"
+  >
+    <h1>{{ msg }}</h1>
+    <button @click="count++">
+      count is: {{ count }}
+    </button>
+    <p class="edit-box">
+      Edit <code>components/HelloWorld.vue</code> to test hot module
+      replacement.
+    </p>
 
-  <a-month-picker format="YYYY-MM" valueFormat="YYYY-MM" v-model:value="value1" @change="onChange" /><br />
+    <a-month-picker
+      v-model:value="value1"
+      format="YYYY-MM"
+      value-format="YYYY-MM"
+      @change="onChange"
+    /><br>
 
-  {{ value1 }}
+    {{ value1 }}
 
-  <a-date-picker valueFormat="YYYY-MM-DD" v-model:value="value2" placeholder="Select Time" @change="onChange" @ok="onOk" />
+    <a-date-picker
+      v-model:value="value2"
+      value-format="YYYY-MM-DD"
+      placeholder="Select Time"
+      @change="onChange"
+      @ok="onOk"
+    />
 
-  <a-input v-model:value="value3" placeholder="Basic usage" />
-  {{ value3 }}
-</div>
+    <a-input
+      v-model:value="value3"
+      placeholder="Basic usage"
+    />
+    {{ value3 }}
+  </div>
 </template>
 
 <script>

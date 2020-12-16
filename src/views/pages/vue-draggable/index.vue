@@ -1,10 +1,14 @@
 <template>
   <div class="draggable-box">
-    <draggable class="dragArea list-group w-full" :list="list" @change="log">
+    <draggable
+      class="dragArea list-group w-full"
+      :list="list"
+      @change="log"
+    >
       <div
-        class="list-group-item bg-gray-300 m-1 p-3 rounded-md text-center"
         v-for="element in list"
         :key="element.name"
+        class="list-group-item bg-gray-300 m-1 p-3 rounded-md text-center"
       >
         <div style="height: 100px; backgroud-color: blue;">
           {{ element.name }}
@@ -14,8 +18,7 @@
 
     <router-link to="/side/index">
       <span>side/test</span>
-    </router-link>    
-
+    </router-link>
   </div>
 </template>
 <script>

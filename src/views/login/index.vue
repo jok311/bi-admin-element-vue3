@@ -1,15 +1,38 @@
 <template>
   <div class="login-box">
     <div class="input-box">
-      <div class="title-box">盘感BI</div>
+      <div class="title-box">
+        盘感BI
+      </div>
       <span class="email-box">
-        <el-input size="large" placeholder="请输入邮箱" clearable prefix-icon="el-icon-message" v-model="email"> </el-input>
+        <el-input
+          v-model="email"
+          size="large"
+          placeholder="请输入邮箱"
+          clearable
+          prefix-icon="el-icon-message"
+        />
       </span>
       <span class="password-box">
-        <el-input placeholder="请输入密码" size="large" clearable prefix-icon="el-icon-view" v-model="password" show-password></el-input>
+        <el-input
+          v-model="password"
+          placeholder="请输入密码"
+          size="large"
+          clearable
+          prefix-icon="el-icon-view"
+          show-password
+        />
       </span>
       <div class="login-btn">
-        <el-button size="large" :loading="loading" :disabled="loading" type="primary" @click="login">登录</el-button>
+        <el-button
+          size="large"
+          :loading="loading"
+          :disabled="loading"
+          type="primary"
+          @click="login"
+        >
+          登录
+        </el-button>
       </div>
     </div>
 

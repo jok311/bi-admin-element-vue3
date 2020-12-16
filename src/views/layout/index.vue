@@ -1,11 +1,10 @@
 <template>
   <div class="lay-out-box">
-    <side-menu></side-menu>
-    <app-main></app-main>
+    <side-menu />
+    <app-main />
     <!-- <component :is="sideMenu"></component> -->
     <!-- <component is="sideMenu"></component>
     <component is="appMain"></component> -->
-
   </div>
 </template>
 

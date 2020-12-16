@@ -1,9 +1,18 @@
 <template>
   <div class="side-menu-box">
     <div class="collapsed-box">
-      <span class="collapsed-btn" @click="isCollapse = !isCollapse">
-        <i class="el-icon-s-unfold" v-if="isCollapse"></i>
-        <i class="el-icon-s-fold" v-else></i>
+      <span
+        class="collapsed-btn"
+        @click="isCollapse = !isCollapse"
+      >
+        <i
+          v-if="isCollapse"
+          class="el-icon-s-unfold"
+        />
+        <i
+          v-else
+          class="el-icon-s-fold"
+        />
       </span>
     </div>
 
@@ -11,78 +20,83 @@
     <el-menu
       class="el-menu-vertical-demo"
       :router="true"
-      @open="handleOpen"
-      @close="handleClose"
       :collapse="isCollapse"
       :default-active="defaultOpeneds"
+      @open="handleOpen"
+      @close="handleClose"
     >
-
-    <el-menu-item index="/">
-      <template v-slot:title>
-          <i class="el-icon-menu"></i>
+      <el-menu-item index="/">
+        <template #title>
+          <i class="el-icon-menu" />
           <span>home-index</span>
-      </template>        
-    </el-menu-item>    
+        </template>        
+      </el-menu-item>    
 
-    <el-menu-item index="/user/index">
-      <template v-slot:title>
-          <i class="el-icon-menu"></i>
+      <el-menu-item index="/user/index">
+        <template #title>
+          <i class="el-icon-menu" />
           <span>user-index</span>
-      </template>        
-    </el-menu-item>    
-    <el-menu-item index="/vue-drag-resize/index">
-      <template v-slot:title>
-          <i class="el-icon-menu"></i>
+        </template>        
+      </el-menu-item>    
+      <el-menu-item index="/interact/index">
+        <template #title>
+          <i class="el-icon-menu" />
+          <span>interact-index</span>
+        </template>        
+      </el-menu-item>    
+      <el-menu-item index="/vue-drag-resize/index">
+        <template #title>
+          <i class="el-icon-menu" />
           <span>vue-drag-resize</span>
-      </template>        
-    </el-menu-item>    
+        </template>        
+      </el-menu-item>    
 
-    <el-submenu index="1-4">
-      <template v-slot:title>
-        <i class="el-icon-menu"></i>
-        <span>目录</span>
-      </template>
-      <el-menu-item index="/vue-grid-out/index">
-        <template v-slot:title>
-          <span>vue-grid-out</span>
-        </template>      
-      </el-menu-item>
-    </el-submenu>    
+      <el-submenu index="1-4">
+        <template #title>
+          <i class="el-icon-menu" />
+          <span>目录</span>
+        </template>
+        <el-menu-item index="/vue-grid-out/index">
+          <template #title>
+            <span>vue-grid-out</span>
+          </template>      
+        </el-menu-item>
+      </el-submenu>    
 
       <el-menu-item index="/costumclone/index">
-        <template v-slot:title>
-            <i class="el-icon-menu"></i>
-            <span>costumclone-index</span>
+        <template #title>
+          <i class="el-icon-menu" />
+          <span>costumclone-index</span>
         </template>        
       </el-menu-item>
 
 
       <el-menu-item index="/draggable/index">
-        <template v-slot:title>
-            <i class="el-icon-menu"></i>
-            <span>draggable-box</span>
+        <template #title>
+          <i class="el-icon-menu" />
+          <span>draggable-box</span>
         </template>                        
       </el-menu-item>         
 
 
       <el-menu-item index="/dash/template">
-        <template v-slot:title>
-            <i class="el-icon-menu"></i>
-            <span>dash-template</span>
+        <template #title>
+          <i class="el-icon-menu" />
+          <span>dash-template</span>
         </template>                         
       </el-menu-item>       
 
       <el-menu-item index="/dash/box">
-        <template v-slot:title>
-            <i class="el-icon-menu"></i>
-            <span>dash-box</span>
+        <template #title>
+          <i class="el-icon-menu" />
+          <span>dash-box</span>
         </template>                         
       </el-menu-item>       
 
       <el-menu-item index="/side/index">
-        <template v-slot:title>
-            <i class="el-icon-menu"></i>
-            <span>side-box</span>
+        <template #title>
+          <i class="el-icon-menu" />
+          <span>side-box</span>
         </template>            
       </el-menu-item>       
     </el-menu>

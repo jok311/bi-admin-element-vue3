@@ -1,19 +1,34 @@
 <template>
-    <div id="app">
-<div>
-  <vue-resize-sensor @resize="onResize">
-      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
-      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
-      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
-      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
-      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
-      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
-      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
-      <div style="background: #eee;margin-bottom: 4px;height: 72px;">resize</div>
-  </vue-resize-sensor>
-  
-</div>
+  <div id="app">
+    <div>
+      <vue-resize-sensor @resize="onResize">
+        <div style="background: #eee;margin-bottom: 4px;height: 72px;">
+          resize
+        </div>
+        <div style="background: #eee;margin-bottom: 4px;height: 72px;">
+          resize
+        </div>
+        <div style="background: #eee;margin-bottom: 4px;height: 72px;">
+          resize
+        </div>
+        <div style="background: #eee;margin-bottom: 4px;height: 72px;">
+          resize
+        </div>
+        <div style="background: #eee;margin-bottom: 4px;height: 72px;">
+          resize
+        </div>
+        <div style="background: #eee;margin-bottom: 4px;height: 72px;">
+          resize
+        </div>
+        <div style="background: #eee;margin-bottom: 4px;height: 72px;">
+          resize
+        </div>
+        <div style="background: #eee;margin-bottom: 4px;height: 72px;">
+          resize
+        </div>
+      </vue-resize-sensor>
     </div>
+  </div>
 </template>
 
 <script>
@@ -21,7 +36,7 @@
 
 
     export default {
-        name: 'app',
+        name: 'App',
 
         components: {
                 VueResizeSensor,

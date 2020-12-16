@@ -1,18 +1,42 @@
 <template>
-  <div ref="lineBarChartBox" class="line-bar-chart-box" :style="{height: chartBoxHeight, overflow: overflowBox}">
-    <div v-if="title != ''" class="title-box" :style="{textAlign: titleAlign}">
-      <span class="index-box" v-if="isShowIndex"> {{ indexKey + 1 }}</span>
-      <span>{{title}}</span>
+  <div
+    ref="lineBarChartBox"
+    class="line-bar-chart-box"
+    :style="{height: chartBoxHeight, overflow: overflowBox}"
+  >
+    <div
+      v-if="title != ''"
+      class="title-box"
+      :style="{textAlign: titleAlign}"
+    >
+      <span
+        v-if="isShowIndex"
+        class="index-box"
+      > {{ indexKey + 1 }}</span>
+      <span>{{ title }}</span>
       <!-- <el-tooltip v-if="comment" class="item" effect="dark" :content="comment">
         <i class="el-icon-question" style="color:#888;"></i>
       </el-tooltip>          -->
       <span v-if="isShowExport">
         <!-- <span class="export-btn" @click="tableExportToExcel(excelData, excelColumns)"><svg-icon icon-class="ExcelB" /></span>         -->
-        <span class="export-btn" @click="tableExportToExcel(excelData, excelColumns)"></span>        
+        <span
+          class="export-btn"
+          @click="tableExportToExcel(excelData, excelColumns)"
+        />        
       </span>
     </div>
-    <div :class="className" :style="{height: height, width: width}" ref="chartBox"></div>
-    <div id="tooltip-box" v-if="tooltipConfig.content.length" :style="{color:tooltipConfig.color}">{{tooltipConfig.content}}</div>
+    <div
+      ref="chartBox"
+      :class="className"
+      :style="{height: height, width: width}"
+    />
+    <div
+      v-if="tooltipConfig.content.length"
+      id="tooltip-box"
+      :style="{color:tooltipConfig.color}"
+    >
+      {{ tooltipConfig.content }}
+    </div>
   </div>
 </template>
 <script>
@@ -24,118 +48,7 @@ import echarts from 'echarts'
 // var myChart = null
 
 export default {
-  name: "lineBarChart",
-  data() {
-    return {
-      myChart: null,
-      fullChart: null,
-      lineBarData: [],
-      axisColor: "#2a2a2a", //坐标轴颜色，坐标轴文字颜色
-      yAxisColor: "#2a2a2a",
-      isShowFull: false,
-      seriesData: [], //图表数据
-      seriesArray: {
-        type: Array,
-        default: () => {
-          return []
-        }
-      },  
-      dimensionsArray: {
-        type: Array,
-        default: () => {
-          return []
-        }
-      },          
-      legendData: {
-        type: Array,
-        default: () => {
-          return []
-        }
-      },
-      selected: {},
-      tooltipConfig: {
-        content:'',
-        color:''
-      },
-
-      chartsSelectedMode: 'multiple',
-
-      toolbox:{
-          show : true,
-          top: '25',
-          right: '30',
-          feature : {
-            myFull: {
-                show: true,
-                title: '全屏查看',
-                icon: 'path d="M0 0h256v51.2H0z" p-id="4378"></path><path d="M51.2 0v256H0V0zM1024 0v256h-51.2V0z" fill="" p-id="4379"></path><path d="M1024 51.2h-256V0h256zM1024 1024h-256v-51.2h256z" fill="" p-id="4380"></path><path d="M972.8 1024v-256h51.2v256zM0 1024v-256h51.2v256z" fill="" p-id="4381"></path><path d="M0 972.8h256v51.2H0z',
-                iconStyle: {
-                  borderWidth: 1,
-                  borderColor: '#666'
-                },
-                onclick: (e) => {
-                  if(this.option.toolbox.feature.myFull.title == '关闭全屏') {
-                    this.isShowFull = false
-                  }else{
-                    this.isShowFull = true
-                  }                  
-                  this.initFullCharts()
-                }
-            },    
-            myClear: {
-              show: true,
-              title: '清空',
-              icon: 'path d="M1033.11891 495.639602a156.630697 156.630697 0 0 0-73.487689-99.771608L813.192247 311.115767l47.740178-83.143006a153.412258 153.412258 0 0 0 12.33735-127.12834A153.948664 153.948664 0 0 0 783.153483 9.11891a156.630697 156.630697 0 0 0-187.742273 70.805658L549.816658 160.921949l-150.193819-89.579885a154.485071 154.485071 0 0 0-173.795704 11.800943 122.300681 122.300681 0 0 0-48.812991 107.281299 155.557884 155.557884 0 0 0 46.667365 93.871137c-34.330016 53.64065-96.016763 155.557884-136.783657 225.290728a400.159246 400.159246 0 0 1-67.050812 69.196438 60.077528 60.077528 0 0 0-19.310634 50.42221l5.364065 31.111577 613.112625 355.637507a57.931902 57.931902 0 0 0 29.502357 8.046097 64.368779 64.368779 0 0 0 24.138292-4.827658l27.893138-15.019382 5.900472-26.820325a444.144578 444.144578 0 0 1 28.96595-94.94395l131.419592-226.899947a160.921949 160.921949 0 0 0 44.521739 6.973284 119.618649 119.618649 0 0 0 102.453641-53.64065 142.147721 142.147721 0 0 0 19.310633-113.18177zM643.687795 828.748036a268.203248 268.203248 0 0 0-24.674699 62.223153l-101.917234-57.931901 91.72551-158.239917a53.64065 53.64065 0 0 0-18.774227-73.487689 53.64065 53.64065 0 0 0-73.48769 19.84704l-92.261917 157.70351-92.798324-53.64065 92.261917-157.70351a53.64065 53.64065 0 0 0-19.310633-73.48769 53.64065 53.64065 0 0 0-73.48769 19.310634l-92.261917 158.239916-100.308015-58.468308a277.322158 277.322158 0 0 0 41.3033-53.640649c39.157674-67.050812 98.698795-160.921949 133.028811-218.85385l458.627554 263.911995c-33.257203 58.468308-89.579885 156.09429-127.664746 224.217916z m281.61341-281.077004c-8.582504 13.410162-28.429544 5.900471-43.448926-2.682033L321.843897 223.681509a73.48769 73.48769 0 0 1-37.548454-43.985333s0-5.900471 8.582504-13.410162A43.985333 43.985333 0 0 1 321.843897 157.167103a53.64065 53.64065 0 0 1 25.747512 6.973285L536.406496 275.176532a60.077528 60.077528 0 0 0 45.058145 6.436878l24.674699-8.046097 80.997381-140.002096A48.812991 48.812991 0 0 1 745.068622 107.281299a46.130959 46.130959 0 0 1 26.820325 27.356731 44.521739 44.521739 0 0 1-3.218439 37.012049L697.328444 299.314825a59.004715 59.004715 0 0 0 21.45626 80.460974l188.27868 107.281299a49.885804 49.885804 0 0 1 23.065479 31.647983 34.866422 34.866422 0 0 1-5.900471 28.965951z" fill="" p-id="751"',
-              onclick: (e) => {
-                this.legendSelected(false)
-              }
-            },                      
-            myAll: {
-              show: true,
-              title: '全选',
-              zlevel: 998,
-              icon: 'path d="M450.56 207.36a23.04 23.04 0 1 1 0-46.08h506.88a23.04 23.04 0 0 1 0 46.08H450.56z m0 325.12a23.04 23.04 0 0 1 0-46.08h506.88a23.04 23.04 0 0 1 0 46.08H450.56z m0 332.8a23.04 23.04 0 0 1 0-46.08h506.88a23.04 23.04 0 0 1 0 46.08H450.56zM138.51136 223.6928l137.3184-132.736a23.04 23.04 0 1 1 32.0256 33.1264l-153.6 148.48a23.04 23.04 0 0 1-32.3072-0.27136l-71.68-71.68a23.04 23.04 0 1 1 32.58368-32.58368L138.51136 223.6928zM82.85184 495.70816l55.65952 55.66464 137.3184-132.736a23.04 23.04 0 1 1 32.0256 33.1264l-153.6 148.48a23.04 23.04 0 0 1-32.3072-0.27136l-71.68-71.68a23.04 23.04 0 0 1 32.58368-32.58368z m0 332.8l55.65952 55.66464 137.3184-132.736a23.04 23.04 0 0 1 32.0256 33.1264l-153.6 148.48a23.04 23.04 0 0 1-32.3072-0.27136l-71.68-71.68a23.04 23.04 0 0 1 32.58368-32.58368z" fill="#000000" p-id="6203"',
-              onclick: (e) => {
-                this.legendSelected(true)
-              }
-
-            },   
-            mySelectedMode: {
-              show: true,
-              title: '选择模式',
-              zlevel: 999,
-              z: 999,
-              icon: 'path d="M920 789H104c0-22.1-17.9-40-40-40V275c22.1 0 40-17.9 40-40h816c0 22.1 17.9 40 40 40v474c-22.1 0-40 17.9-40 40z" p-id="3193',
-              iconStyle: {
-                borderWidth: 0.8,
-                borderColor: '#666'
-              },    
-              onclick: (e) => {
-                this.chartsSelectedMode = this.chartsSelectedMode == 'multiple' ? 'single' : 'multiple'
-                let rect = 'path d="M920 789H104c0-22.1-17.9-40-40-40V275c22.1 0 40-17.9 40-40h816c0 22.1 17.9 40 40 40v474c-22.1 0-40 17.9-40 40z" p-id="3193"'
-                let circle = 'path d="M512 65.983C266.08 65.983 65.983 266.08 65.983 512c0 245.952 200.065 446.017 446.017 446.017S958.017 757.952 958.017 512c0-245.92-200.065-446.017-446.017-446.017z m0 828.034c-210.656 0-382.017-171.392-382.017-382.017 0-210.656 171.36-382.017 382.017-382.017 210.625 0 382.017 171.36 382.017 382.017 0 210.625-171.392 382.017-382.017 382.017z" p-id="1110"></path><path d="M512 352c-88.224 0-160 71.776-160 160s71.774 160 160 160 160-71.774 160-160-71.776-160-160-160z" p-id="1111"'
-                this.option.toolbox.feature.mySelectedMode.icon = this.chartsSelectedMode == 'multiple' ? rect: circle
-                this.initEcharts(this.seriesData)
-                if(this.option.toolbox.feature.myFull.title == '关闭全屏') {
-                  this.setFullCharsOptions()
-                }else{
-                  this.setOption()
-                }
-              }                        
-            }, 
-            brush: {
-                type: ['lineX', 'clear']
-            },
-            dataZoom: {
-              yAxisIndex: 'none'
-						},            
-            saveAsImage : {show: true},
-            magicType : {show: true, z: 0, type: ['stack','tiled','line', 'bar']},
-            restore : {show: true},
-          }
-				}      
-    }
-  },
+  name: "LineBarChart",
 
   props: {
     isShowIndex: {
@@ -312,6 +225,117 @@ export default {
       console.log('mounted!', columns)
       
     })
+  },
+  data() {
+    return {
+      myChart: null,
+      fullChart: null,
+      lineBarData: [],
+      axisColor: "#2a2a2a", //坐标轴颜色，坐标轴文字颜色
+      yAxisColor: "#2a2a2a",
+      isShowFull: false,
+      seriesData: [], //图表数据
+      seriesArray: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },  
+      dimensionsArray: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },          
+      legendData: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },
+      selected: {},
+      tooltipConfig: {
+        content:'',
+        color:''
+      },
+
+      chartsSelectedMode: 'multiple',
+
+      toolbox:{
+          show : true,
+          top: '25',
+          right: '30',
+          feature : {
+            myFull: {
+                show: true,
+                title: '全屏查看',
+                icon: 'path d="M0 0h256v51.2H0z" p-id="4378"></path><path d="M51.2 0v256H0V0zM1024 0v256h-51.2V0z" fill="" p-id="4379"></path><path d="M1024 51.2h-256V0h256zM1024 1024h-256v-51.2h256z" fill="" p-id="4380"></path><path d="M972.8 1024v-256h51.2v256zM0 1024v-256h51.2v256z" fill="" p-id="4381"></path><path d="M0 972.8h256v51.2H0z',
+                iconStyle: {
+                  borderWidth: 1,
+                  borderColor: '#666'
+                },
+                onclick: (e) => {
+                  if(this.option.toolbox.feature.myFull.title == '关闭全屏') {
+                    this.isShowFull = false
+                  }else{
+                    this.isShowFull = true
+                  }                  
+                  this.initFullCharts()
+                }
+            },    
+            myClear: {
+              show: true,
+              title: '清空',
+              icon: 'path d="M1033.11891 495.639602a156.630697 156.630697 0 0 0-73.487689-99.771608L813.192247 311.115767l47.740178-83.143006a153.412258 153.412258 0 0 0 12.33735-127.12834A153.948664 153.948664 0 0 0 783.153483 9.11891a156.630697 156.630697 0 0 0-187.742273 70.805658L549.816658 160.921949l-150.193819-89.579885a154.485071 154.485071 0 0 0-173.795704 11.800943 122.300681 122.300681 0 0 0-48.812991 107.281299 155.557884 155.557884 0 0 0 46.667365 93.871137c-34.330016 53.64065-96.016763 155.557884-136.783657 225.290728a400.159246 400.159246 0 0 1-67.050812 69.196438 60.077528 60.077528 0 0 0-19.310634 50.42221l5.364065 31.111577 613.112625 355.637507a57.931902 57.931902 0 0 0 29.502357 8.046097 64.368779 64.368779 0 0 0 24.138292-4.827658l27.893138-15.019382 5.900472-26.820325a444.144578 444.144578 0 0 1 28.96595-94.94395l131.419592-226.899947a160.921949 160.921949 0 0 0 44.521739 6.973284 119.618649 119.618649 0 0 0 102.453641-53.64065 142.147721 142.147721 0 0 0 19.310633-113.18177zM643.687795 828.748036a268.203248 268.203248 0 0 0-24.674699 62.223153l-101.917234-57.931901 91.72551-158.239917a53.64065 53.64065 0 0 0-18.774227-73.487689 53.64065 53.64065 0 0 0-73.48769 19.84704l-92.261917 157.70351-92.798324-53.64065 92.261917-157.70351a53.64065 53.64065 0 0 0-19.310633-73.48769 53.64065 53.64065 0 0 0-73.48769 19.310634l-92.261917 158.239916-100.308015-58.468308a277.322158 277.322158 0 0 0 41.3033-53.640649c39.157674-67.050812 98.698795-160.921949 133.028811-218.85385l458.627554 263.911995c-33.257203 58.468308-89.579885 156.09429-127.664746 224.217916z m281.61341-281.077004c-8.582504 13.410162-28.429544 5.900471-43.448926-2.682033L321.843897 223.681509a73.48769 73.48769 0 0 1-37.548454-43.985333s0-5.900471 8.582504-13.410162A43.985333 43.985333 0 0 1 321.843897 157.167103a53.64065 53.64065 0 0 1 25.747512 6.973285L536.406496 275.176532a60.077528 60.077528 0 0 0 45.058145 6.436878l24.674699-8.046097 80.997381-140.002096A48.812991 48.812991 0 0 1 745.068622 107.281299a46.130959 46.130959 0 0 1 26.820325 27.356731 44.521739 44.521739 0 0 1-3.218439 37.012049L697.328444 299.314825a59.004715 59.004715 0 0 0 21.45626 80.460974l188.27868 107.281299a49.885804 49.885804 0 0 1 23.065479 31.647983 34.866422 34.866422 0 0 1-5.900471 28.965951z" fill="" p-id="751"',
+              onclick: (e) => {
+                this.legendSelected(false)
+              }
+            },                      
+            myAll: {
+              show: true,
+              title: '全选',
+              zlevel: 998,
+              icon: 'path d="M450.56 207.36a23.04 23.04 0 1 1 0-46.08h506.88a23.04 23.04 0 0 1 0 46.08H450.56z m0 325.12a23.04 23.04 0 0 1 0-46.08h506.88a23.04 23.04 0 0 1 0 46.08H450.56z m0 332.8a23.04 23.04 0 0 1 0-46.08h506.88a23.04 23.04 0 0 1 0 46.08H450.56zM138.51136 223.6928l137.3184-132.736a23.04 23.04 0 1 1 32.0256 33.1264l-153.6 148.48a23.04 23.04 0 0 1-32.3072-0.27136l-71.68-71.68a23.04 23.04 0 1 1 32.58368-32.58368L138.51136 223.6928zM82.85184 495.70816l55.65952 55.66464 137.3184-132.736a23.04 23.04 0 1 1 32.0256 33.1264l-153.6 148.48a23.04 23.04 0 0 1-32.3072-0.27136l-71.68-71.68a23.04 23.04 0 0 1 32.58368-32.58368z m0 332.8l55.65952 55.66464 137.3184-132.736a23.04 23.04 0 0 1 32.0256 33.1264l-153.6 148.48a23.04 23.04 0 0 1-32.3072-0.27136l-71.68-71.68a23.04 23.04 0 0 1 32.58368-32.58368z" fill="#000000" p-id="6203"',
+              onclick: (e) => {
+                this.legendSelected(true)
+              }
+
+            },   
+            mySelectedMode: {
+              show: true,
+              title: '选择模式',
+              zlevel: 999,
+              z: 999,
+              icon: 'path d="M920 789H104c0-22.1-17.9-40-40-40V275c22.1 0 40-17.9 40-40h816c0 22.1 17.9 40 40 40v474c-22.1 0-40 17.9-40 40z" p-id="3193',
+              iconStyle: {
+                borderWidth: 0.8,
+                borderColor: '#666'
+              },    
+              onclick: (e) => {
+                this.chartsSelectedMode = this.chartsSelectedMode == 'multiple' ? 'single' : 'multiple'
+                let rect = 'path d="M920 789H104c0-22.1-17.9-40-40-40V275c22.1 0 40-17.9 40-40h816c0 22.1 17.9 40 40 40v474c-22.1 0-40 17.9-40 40z" p-id="3193"'
+                let circle = 'path d="M512 65.983C266.08 65.983 65.983 266.08 65.983 512c0 245.952 200.065 446.017 446.017 446.017S958.017 757.952 958.017 512c0-245.92-200.065-446.017-446.017-446.017z m0 828.034c-210.656 0-382.017-171.392-382.017-382.017 0-210.656 171.36-382.017 382.017-382.017 210.625 0 382.017 171.36 382.017 382.017 0 210.625-171.392 382.017-382.017 382.017z" p-id="1110"></path><path d="M512 352c-88.224 0-160 71.776-160 160s71.774 160 160 160 160-71.774 160-160-71.776-160-160-160z" p-id="1111"'
+                this.option.toolbox.feature.mySelectedMode.icon = this.chartsSelectedMode == 'multiple' ? rect: circle
+                this.initEcharts(this.seriesData)
+                if(this.option.toolbox.feature.myFull.title == '关闭全屏') {
+                  this.setFullCharsOptions()
+                }else{
+                  this.setOption()
+                }
+              }                        
+            }, 
+            brush: {
+                type: ['lineX', 'clear']
+            },
+            dataZoom: {
+              yAxisIndex: 'none'
+						},            
+            saveAsImage : {show: true},
+            magicType : {show: true, z: 0, type: ['stack','tiled','line', 'bar']},
+            restore : {show: true},
+          }
+				}      
+    }
   },
 
 

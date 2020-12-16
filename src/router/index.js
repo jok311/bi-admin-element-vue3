@@ -149,6 +149,17 @@ const router = createRouter({
         },
       ]
     },
+    {
+      component: Layout,
+      children: [
+        {
+          path: '/interact/index',
+          component: () => import('../views/pages/interact/index.vue'),
+          name: 'interact',
+          meta: { title: 'interact', affix: true }
+        },
+      ]
+    },
 
   ]
 })

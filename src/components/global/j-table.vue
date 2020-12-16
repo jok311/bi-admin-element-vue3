@@ -34,30 +34,35 @@
       :lazy="lazy"
       :load="load"
       :tree-props="treeProps"
-      >
+    >
       <template v-for="item in columns">
         <el-table-column
           v-if="item.hidden ? false : true"
+          :key="item.key"
           :label="item.label"
           :fit="true"
-          :key="item.key"
           :prop="item.key"
           :min-width="item.width ? item.width : width"
           :column-key="item.columnKey"
           v-bind="$attrs"
         >
           <template #header="scope">
-            <slot :scope="scope" :name="`${item.key}_header`">
+            <slot
+              :scope="scope"
+              :name="`${item.key}_header`"
+            >
               {{ item.label }}
             </slot>
           </template>        
           
           <template #default="scope">
-            <slot :scope="scope" :name="item.key">
+            <slot
+              :scope="scope"
+              :name="item.key"
+            >
               {{ scope.row[item.key] }}              
             </slot>
           </template>
-
         </el-table-column>
       </template>       
     </el-table>    

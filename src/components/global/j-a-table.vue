@@ -1,8 +1,13 @@
 <template>
-  <a-table :columns="columns" :data-source="data">
-
-    <template v-for="(item, index) in columns" v-slot:[item.dataIndex]="{ text, record }">
-      {{item.dataIndex}}
+  <a-table
+    :columns="columns"
+    :data-source="data"
+  >
+    <template
+      v-for="(item, index) in columns"
+      #[item.dataIndex]="{ text, record }"
+    >
+      {{ item.dataIndex }}
       <span :key="index">8888-----{{ text }}</span>
     </template>    
     

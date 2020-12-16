@@ -1,16 +1,38 @@
 <template>
   <div class="user-box">
-    <j-table :data="userList" :columns="columns" size="medium">  
+    <j-table
+      :data="userList"
+      :columns="columns"
+      size="medium"
+    >  
       <template #edit="{ scope }">
-        <el-button size="mini" type="primary" @click="editItem(scope.row)">修改</el-button>
-        <el-button size="mini" type="primary" @click="updateItem(scope.row)">重置密码</el-button>          
-        <el-button size="mini" type="danger" @click="deleteItem(scope.row)">删除</el-button>
+        <el-button
+          size="mini"
+          type="primary"
+          @click="editItem(scope.row)"
+        >
+          修改
+        </el-button>
+        <el-button
+          size="mini"
+          type="primary"
+          @click="updateItem(scope.row)"
+        >
+          重置密码
+        </el-button>          
+        <el-button
+          size="mini"
+          type="danger"
+          @click="deleteItem(scope.row)"
+        >
+          删除
+        </el-button>
       </template>   
       <template #update_at="scope">
         {{ dayjs(scope.row).format() }}
       </template>
       <template #update_at_header>
-          日期
+        日期
       </template>
     </j-table>
   </div>

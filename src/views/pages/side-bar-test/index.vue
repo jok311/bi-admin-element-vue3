@@ -5,7 +5,9 @@
       <span>draggable</span>
     </router-link>
     {{ title }}
-    <div @click="addCount()">count++</div>
+    <div @click="addCount()">
+      count++
+    </div>
     <div>{{ count }}</div>
     <!-- <line-bar-chart :data="dataColumns.data" :columns="dataColumns.columns" :title="title"></line-bar-chart> -->
   </div>

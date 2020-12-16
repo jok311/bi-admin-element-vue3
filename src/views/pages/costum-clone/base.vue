@@ -10,9 +10,9 @@
         @change="log"
       >
         <div
-          class="list-group-item"
           v-for="item in componentList"
           :key="item.id"
+          class="list-group-item"
         >
           {{ item.name }}
         </div>
@@ -27,7 +27,11 @@
         group="people"
         @change="log"
       >
-        <div class="list-group-item" v-for="item in gridList" :key="item.id">
+        <div
+          v-for="item in gridList"
+          :key="item.id"
+          class="list-group-item"
+        >
           {{ item.name }}
         </div>
       </draggable>
@@ -39,7 +43,7 @@
 import { VueDraggableNext } from "vue-draggable-next";
 let idGlobal = 8;
 export default {
-  name: "custom-clone",
+  name: "CustomClone",
   display: "Custom Clone",
   order: 3,
   components: {

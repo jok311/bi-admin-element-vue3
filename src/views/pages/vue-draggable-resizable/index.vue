@@ -1,8 +1,16 @@
 <template>
   <div style="height: 500px; width: 500px; border: 1px solid red; position: relative;">
-    <vue-draggable-resizable :w="100" :h="100" @dragging="onDrag" @resizing="onResize" :parent="true">
-      <p>Hello! I'm a flexible component. You can drag me around and you can resize me.<br>
-      X: {{ x }} / Y: {{ y }} - Width: {{ width }} / Height: {{ height }}</p>
+    <vue-draggable-resizable
+      :w="100"
+      :h="100"
+      :parent="true"
+      @dragging="onDrag"
+      @resizing="onResize"
+    >
+      <p>
+        Hello! I'm a flexible component. You can drag me around and you can resize me.<br>
+        X: {{ x }} / Y: {{ y }} - Width: {{ width }} / Height: {{ height }}
+      </p>
     </vue-draggable-resizable>
   </div>
 </template>

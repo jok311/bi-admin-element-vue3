@@ -8,31 +8,46 @@
         :group="{ name: 'people', pull: 'clone', put: false }"
         :clone="cloneDog"
       >
-        <div class="list-group-item" v-for="element in list1" :key="element.id">
+        <div
+          v-for="(element) in list1"
+          :key="element.id"
+          class="list-group-item"
+        >
           {{ element.name }}
         </div>
       </draggable>
     </div>
 
-    <div class="col-3" ref="groupList">
+    <div
+      ref="groupList"
+      class="col-3"
+    >
       <h3>展示box</h3>
       <draggable
-        class="dragArea list-group list-group-right"
         ref="groupRight"
+        class="dragArea list-group list-group-right"
         :list="list2"
         v-bind="dragOptions"
         group="people"
         @end="log"
       >
         <transition-group type="transition">
-
-          <div
-            class="list-group-item"
-            v-for="element in list2"
+          <grid-item
+            v-for="(element, i) in list2"
             :key="element.id"
+            :ref="el => { if (el) groupItemsDom[i] = el }"
+            class="list-group-item"
           >
             {{ element.name }}
-          </div>
+          </grid-item>
+          <!-- <div
+            class="list-group-item"
+            v-for="(element, i) in list2"
+            :key="element.id"
+            :ref="el => { if (el) groupItemsDom[i] = el }"
+          >
+            {{ element.name }}
+          </div> -->
         </transition-group>
       </draggable>
     </div>
@@ -40,19 +55,25 @@
 </template>
 
 <script>
-import { ref, readonly, onMounted, getCurrentInstance } from 'vue'
+import { ref, unref, readonly, onMounted, getCurrentInstance } from 'vue'
 import { VueDraggableNext } from "vue-draggable-next";
 import 'vue-resize/dist/vue-resize.css'
 import VueResize from 'vue-resize'
 
+import gridItem from './gridItem.vue'
+
+    import VueGridLayout from 'vue-grid-layout';
+
+
 
 let idGlobal = 8;
 export default {
-  name: "custom-clone",
+  name: "CustomClone",
   display: "Custom Clone",
   order: 3,
   components: {
     draggable: VueDraggableNext,
+    gridItem ,
     VueResize
   },
 
@@ -60,31 +81,49 @@ export default {
 
     const ctx = getCurrentInstance()
 
-    console.log(refs)
-
     const groupRight = ref(null)
-
+    const groupItemsDom = []
+    
     
 
     function handleResize ({ width, height }) {
       console.log('resized', width, height)
     }
 
-    const myObserver = new ResizeObserver(entries => {
-    // 注意，entres是个数组，数组项为每个需要监听的DOM节点
-      entries.forEach(entry => {
-        console.log('大小位置 contentRect', entry.contentRect)
-        console.log('监听的DOM target', entry.target)
-      })
-    })    
 
-    onMounted( () => {
-      // console.log(vm.$refs)
-      // myObserver.observe()
-      console.log(groupRight.value, 8888)
+    // 节流监听dom
+    let isAvail = true
+    const myObserver = new ResizeObserver( entries => {
+      if(isAvail) {
+        setProps(entries)
+        isAvail = false
+        setTimeout( () => {
+          isAvail = true
+        }, 500)
+      }
+
     })
 
-    return { handleResize, groupRight }
+    function setProps(entries) {
+      console.log(entries, 8889999)
+      entries.forEach(entry => {
+        console.log('大小位置 contentRect', entry.contentRect)
+        // console.log('监听的DOM target', entry.target)
+      })
+    }
+    
+
+    onMounted( () => {
+      myObserver.observe(groupRight.value.$el)      
+
+      console.log(groupItemsDom, 989898)
+      // myObserver.observe(groupItemsDom)      
+      groupItemsDom.forEach( item => {
+        // myObserver.observe(item)      
+      })
+    })
+
+    return { handleResize, groupRight, groupItemsDom }
   },
 
   data() {
@@ -98,7 +137,12 @@ export default {
       list2: [
         { name: "cat 5", id: 5 },
         { name: "cat 6", id: 6 },
-        { name: "cat 7", id: 7 }
+        { name: "cat 7", id: 7 },
+        { name: "cat 7", id: 7 },
+        { name: "cat 7", id: 7 },
+        { name: "cat 7", id: 7 },
+        { name: "cat 7", id: 7 },
+        { name: "cat 7", id: 7 },
       ]
     };
   },
@@ -146,16 +190,17 @@ export default {
   height 100vh
   padding 0 4px
   .col-3
-    width 50%
+    // width 50%
     .list-group-left
       // display flex
     .list-group-right
       display inline-block
-      width 100%
+      width 72vw
       height 85vh
       border 1px solid #eee
-      resize both
-      overflow auto      
+      // resize both
+      // overflow auto    
+      position relative
       .list-group-item
         display inline-block
         min-width 100px
@@ -164,8 +209,8 @@ export default {
         // border 2px solid red
         // padding 10px 40px
         // width 300px
-        resize both
-        overflow auto
+        // resize both
+        // overflow auto
     .list-group
       .list-group-item
         // width 150px

@@ -1,8 +1,17 @@
 <template>
   <div class="line-bar-chart-box">
-    <div :class="className" :style="{ height, width}" ref="chartBox"></div>
+    <div
+      ref="chartBox"
+      :class="className"
+      :style="{ height, width}"
+    />
     <div>{{ title }}</div>
-    <div v-for="(item, index) in data" :key="index">{{ item.date }}--------{{ item.pv }}-------data</div>
+    <div
+      v-for="(item, index) in data"
+      :key="index"
+    >
+      {{ item.date }}--------{{ item.pv }}-------data
+    </div>
   </div>
 </template>
 <script>
