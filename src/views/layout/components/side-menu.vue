@@ -38,6 +38,12 @@
           <span>user-index</span>
         </template>        
       </el-menu-item>    
+      <el-menu-item index="/visual-drag/index">
+        <template #title>
+          <i class="el-icon-menu" />
+          <span>visual-drag-index</span>
+        </template>        
+      </el-menu-item>    
       <el-menu-item index="/interact/index">
         <template #title>
           <i class="el-icon-menu" />

@@ -9,8 +9,8 @@
         :clone="cloneDog"
       >
         <div
-          v-for="(element) in list1"
-          :key="element.id"
+          v-for="(element, i) in list1"
+          :key="i"
           class="list-group-item"
         >
           {{ element.name }}
@@ -25,7 +25,7 @@
       <h3>展示box</h3>
       <draggable
         ref="groupRight"
-        class="dragArea list-group list-group-right"
+        class="dragArea list-group list-group-right grid"
         :list="list2"
         v-bind="dragOptions"
         group="people"
@@ -34,7 +34,7 @@
         <transition-group type="transition">
           <grid-item
             v-for="(element, i) in list2"
-            :key="element.id"
+            :key="i"
             :ref="el => { if (el) groupItemsDom[i] = el }"
             class="list-group-item"
           >
@@ -62,7 +62,9 @@ import VueResize from 'vue-resize'
 
 import gridItem from './gridItem.vue'
 
-    import VueGridLayout from 'vue-grid-layout';
+import VueGridLayout from 'vue-grid-layout';
+
+const Packery = require('packery')
 
 
 
@@ -121,6 +123,14 @@ export default {
       groupItemsDom.forEach( item => {
         // myObserver.observe(item)      
       })
+
+      //   for an individual element
+      // var pckry = new Packery( '.grid', {
+      //   // options
+      //   itemSelector: '.list-group-item',
+      //   resize: true,
+      //   initLayout: true,
+      // });      
     })
 
     return { handleResize, groupRight, groupItemsDom }

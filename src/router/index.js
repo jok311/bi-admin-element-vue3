@@ -160,6 +160,17 @@ const router = createRouter({
         },
       ]
     },
+    {
+      component: Layout,
+      children: [
+        {
+          path: '/visual-drag/index',
+          component: () => import('../views/pages/visual-drag/index.vue'),
+          name: 'visual-drag',
+          meta: { title: 'visual-drag', affix: true }
+        },
+      ]
+    },
 
   ]
 })

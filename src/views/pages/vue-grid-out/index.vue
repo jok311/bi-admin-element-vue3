@@ -29,7 +29,7 @@
 <script>
 import { reactive } from "vue";
 // import VueGridLayout from "vue-grid-layout";
-import {GridLayout, GridItem} from './vue-grid-layout.umd.min.js'
+// import { GridLayout, GridItem } from './vue-grid-layout.umd.js'
 
 
 
@@ -39,10 +39,12 @@ import {GridLayout, GridItem} from './vue-grid-layout.umd.min.js'
 // import GridItem from './components/GridItem.vue';
 // import GridLayout from './components/GridLayout.vue';
 
+// console.log(VueGridLayout)
+
 export default {
   components: {
-      GridLayout: GridLayout,
-      GridItem: GridItem
+      // GridLayout: GridLayout,
+      // GridItem: GridItem
   },
   setup() {
     // const layout = reactive([

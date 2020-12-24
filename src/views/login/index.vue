@@ -64,7 +64,7 @@ export default {
         }
         ctx.postRequest('http://localhost:9521/login', data).then( res => {
           notify({ title: 'success', message: '登陆成功', type: 'success' });          
-          Cookies.set('Authorization', res.data.token)
+          Cookies.set('Authorization', res.data.token, { secure: false, httpOnly: false })
           window.localStorage.userInfo = JSON.stringify(res.data.user_info) //user information
           ctx.$router.push('/')
           loading.value = false
