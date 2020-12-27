@@ -5,31 +5,31 @@
             <span>{{ item.label }}</span>
         </div>
     </div>
-
-    <!-- width: `${item.style.width/editContentBoxWidth < 1 ? item.style.width/editContentBoxWidth*100 : 100}%`, -->
-    <div id="edit-content-box" class="content" @drop="handleDrop($event)" @dragover="handleDragOver">
-        <div 
-          class="list" 
-          v-for="(item, index) in editComponentList" 
-          :key="index"
-          :style="{ 
-            top: item.style.top+'px', 
-            left: item.style.left+'px',
-            height: item.style.height+'px',
-            width: `${item.style.width}px`,
-          }"
-          
-          @mousedown="handleMouseDown(item, index)"
-        >
-          <div class="point-box" @mousedown="handleMouseDownOnPoint(item, index)"><span class="point"></span></div>
-          {{ item.label }}
-          {{ editContentBoxWidth }}
-          ---
-          {{ item.style.width }}
-          ----
-          {{ item.style.width/editContentBoxWidth }}
-        </div>
-    </div>    
+    <div class="edit-box">
+      <div id="edit-content-box" class="content" @drop="handleDrop($event)" @dragover="handleDragOver">
+          <div 
+            class="list" 
+            v-for="(item, index) in editComponentList" 
+            :key="index"
+            :style="{ 
+              top: item.style.top+'px', 
+              left: item.style.left+'%',
+              height: item.style.height+'px',
+              width: item.style.width+'%',
+            }"
+            
+            @mousedown="handleMouseDown(item, index)"
+          >
+            <div class="point-box" @mousedown="handleMouseDownOnPoint(item, index)"><span class="point"></span></div>
+            {{ item.label }}
+            {{ editContentBoxWidth }}
+            ---
+            {{ item.style.width }}
+            ----
+            {{ item.style.width/editContentBoxWidth }}
+          </div>
+      </div>    
+    </div>
   </div>
 </template>
 
@@ -44,7 +44,7 @@ export default {
         key: 'chart', 
         style: {
           height: 72,
-          width: 333
+          width: 33
         }
       },
       {
@@ -52,7 +52,7 @@ export default {
         key: 'pie',
         style: {
           height: 72,
-          width: 333
+          width: 33
         }        
       },
       {
@@ -60,7 +60,7 @@ export default {
         key: 'line',
         style: {
           height: 72,
-          width: 333
+          width: 33
         }        
       },
     ])
@@ -70,7 +70,7 @@ export default {
       editContentBox = document.querySelector('#edit-content-box').getBoundingClientRect()
       editContentBoxWidth.value = editContentBox.width
       colWidth.value = editContentBoxWidth.value/colNum
-      console.log(colWidth.value, 6767667)
+      console.log(colWidth.value, editContentBoxWidth.value, 6767667)
     })
 
     let editComponentList = window.localStorage.editComponentList ? ref(JSON.parse(window.localStorage.editComponentList)) : ref([])
@@ -92,9 +92,11 @@ export default {
       if( !e.dataTransfer.getData('index') ) return
       const component = { ...componentList.value[e.dataTransfer.getData('index')] } //深拷贝
       let targetName = e.target.id == 'edit-content-box'
+      let scrollTop = document.querySelector('#edit-content-box').scrollTop
       component['style'] = {
-        top: targetName ? e.offsetY - dropOffsetY : e.y - dropOffsetY,
-        left: targetName ? e.offsetX - dropOffsetX : e.x - dropOffsetX - dropScreenY,
+        // top: targetName ? e.offsetY - dropOffsetY : e.y - dropOffsetY,
+        top: targetName ? e.offsetY - dropOffsetY + scrollTop : e.y - dropOffsetY + scrollTop,
+        left: targetName ? (e.offsetX - dropOffsetX)/editContentBoxWidth.value*100 : (e.x - dropOffsetX - dropScreenY)/editContentBoxWidth.value*100,
         ...component.style
       }
       editComponentList.value.push(component)
@@ -129,20 +131,22 @@ export default {
       const startX = downEvent.clientX
       // 如果直接修改属性，值的类型会变为字符串，所以要转为数值型
       const startTop = Number(pos.style.top)
-      const startLeft = Number(pos.style.left)
+      const startLeft = Number(pos.style.left/100*editContentBoxWidth.value)
       const height = Number(pos.style.height)
       const width = Number(pos.style.width)
 
+
       let moveable = true, isMove = false
       const move = (moveEvent) => {
+        console.log(startLeft, 135)
         if(!moveable) return
         isMove = true //移动了
         const currX = moveEvent.clientX
         const currY = moveEvent.clientY
         console.log(startY, startX, currY, currX, startTop, startLeft) 
         let newTop = currY - startY + startTop
-        let newLeft = currX - startX + startLeft
-        let maxLeft = editContentBoxWidth.value - width
+        let newLeft = (currX - startX + startLeft)/editContentBoxWidth.value*100
+        let maxLeft = 100 - width
         newLeft = newLeft > maxLeft ? maxLeft : newLeft
         editComponentList.value[index].style = { 
           top:  newTop >= 0 ? newTop : 0, 
@@ -182,7 +186,12 @@ export default {
       const startTop = Number(pos.style.top)
       const startLeft = Number(pos.style.left)  
       const startHeight = Number(pos.style.height)
-      const startWidth = Number(pos.style.width)
+      const startWidthPt = Number(pos.style.width)
+      const startWidthPX = Number(pos.style.width)/100*editContentBoxWidth.value
+      console.log(pos.style.width, 186)
+      console.log(startWidthPX,'startWidthPX')
+      console.log(startWidthPt,'startWidthPt')
+      
       
       let isResize = false
       const move = (moveEvent) => {
@@ -191,13 +200,15 @@ export default {
         const currY = moveEvent.clientY
         const disY = currY - startY
         const disX = currX - startX
-        let newWidth = startWidth + disX
-        let MaxWidth = editContentBoxWidth.value - startLeft
-        newWidth = newWidth > MaxWidth ? MaxWidth : newWidth
+        let newWidthPt = (startWidthPX + disX)/editContentBoxWidth.value*100
+        console.log(startWidthPX,disX, editContentBoxWidth.value, 1999)
+        let MaxWidthPt = 100 - startLeft
+        console.log(newWidthPt, MaxWidthPt, 20022200202)
+        newWidthPt = newWidthPt > MaxWidthPt ? MaxWidthPt : newWidthPt
         let style = { 
           top:  startTop, 
           left: startLeft,
-          width: newWidth,
+          width: newWidthPt < 100 ? newWidthPt : 100,
           height: startHeight + disY
         }
         editComponentList.value[index].style = { ...style }
@@ -246,41 +257,46 @@ export default {
   display flex
   .component-list
     width 120px
+    height 92vh
     .list
       background #eee
       height 72px
+      // min-width 72px
       margin 4px
       cursor copy
-  .content
-    background #fff
-    height 98vh
+  .edit-box
+    height 100vh
     flex 1
-    position relative
-    overflow-y auto
-    overflow-x hidden
-    .list
-      background #eee
-      height 72px
-      // width 33%
-      position absolute
-      border 1px solid #409EFF
-      box-sizing border-box
-      .point-box
-        cursor se-resize
-        display inline-block
-        position absolute
-        width 12px
-        height 12px
+    overflow scroll
+    .content
+      background #fff
+      min-height 220vh
+      min-width 960px
+      position relative
+      overflow auto
+      .list
         background #eee
-        right 0
-        bottom 0
-        .point
+        height 72px
+        // width 33%
+        position absolute
+        border 1px solid #409EFF
+        box-sizing border-box
+        .point-box
+          cursor se-resize
           display inline-block
-          border-right 3px solid #409EFF
-          border-bottom 3px solid #409EFF
-          width 5px
-          height 5px
           position absolute
-          right 2px
-          bottom 2px
+          width 12px
+          height 12px
+          background #eee
+          right 0
+          bottom 0
+          .point
+            display inline-block
+            border-right 3px solid #409EFF
+            border-bottom 3px solid #409EFF
+            width 5px
+            height 5px
+            position absolute
+            right 2px
+            bottom 2px
 </style>

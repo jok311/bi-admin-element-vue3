@@ -116,7 +116,7 @@ import { ref, watch, getCurrentInstance, computed } from "vue";
 export default {
   setup(props) {
     const { ctx } = getCurrentInstance();
-    let isCollapse = ref(true);
+    let isCollapse = ref(false);
     let defaultOpeneds = ref('')
     
     //is_active
