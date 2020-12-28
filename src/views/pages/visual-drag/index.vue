@@ -1,12 +1,14 @@
 <template>
   <div class="visual-drag-box">
     <div class="component-list">
-        <div v-for="(item, index) in componentList" :key="index" class="list" @dragstart="handleDragStart" draggable="true" :data-index="index">
+        <div v-for="(item, index) in componentList" :key="index" class="list" @dragend="handleDragEnd" @dragstart="handleDragStart" draggable="true" :data-index="index">
             <span>{{ item.label }}</span>
         </div>
     </div>
     <div class="edit-box">
+      
       <div id="edit-content-box" class="content" @drop="handleDrop($event)" @dragover="handleDragOver">
+          <div class="line-box"></div>
           <div 
             class="list" 
             v-for="(item, index) in editComponentList" 
@@ -21,6 +23,7 @@
             @mousedown="handleMouseDown(item, index)"
           >
             <div class="point-box" @mousedown="handleMouseDownOnPoint(item, index)"><span class="point"></span></div>
+            {{ index }}
             {{ item.label }}
             {{ editContentBoxWidth }}
             ---
@@ -70,7 +73,6 @@ export default {
       editContentBox = document.querySelector('#edit-content-box').getBoundingClientRect()
       editContentBoxWidth.value = editContentBox.width
       colWidth.value = editContentBoxWidth.value/colNum
-      console.log(colWidth.value, editContentBoxWidth.value, 6767667)
     })
 
     let editComponentList = window.localStorage.editComponentList ? ref(JSON.parse(window.localStorage.editComponentList)) : ref([])
@@ -78,11 +80,14 @@ export default {
     //组件拖拽区target
     let dropOffsetX, dropOffsetY, dropScreenY
     function handleDragStart(e) {
-      console.log(e, 36363663)
+      e.target.style.opacity = .5
       e.dataTransfer.setData('index', e.target.dataset.index)
       dropOffsetX = e.offsetX
       dropOffsetY = e.offsetY
       dropScreenY = e.screenY
+    }
+    function handleDragEnd(e) {
+      e.target.style.opacity = ''
     }
 
     
@@ -93,10 +98,15 @@ export default {
       const component = { ...componentList.value[e.dataTransfer.getData('index')] } //深拷贝
       let targetName = e.target.id == 'edit-content-box'
       let scrollTop = document.querySelector('#edit-content-box').scrollTop
+
+      let targetLet = (e.offsetX - dropOffsetX)/editContentBoxWidth.value*100
+      let unTargetLeft = (e.x - dropOffsetX - dropScreenY)/editContentBoxWidth.value*100
+      let maxLeft = 100 - component.style.width
+      targetLet = targetLet < maxLeft ? targetLet : maxLeft
+      unTargetLeft = unTargetLeft < maxLeft ? unTargetLeft : maxLeft
       component['style'] = {
-        // top: targetName ? e.offsetY - dropOffsetY : e.y - dropOffsetY,
         top: targetName ? e.offsetY - dropOffsetY + scrollTop : e.y - dropOffsetY + scrollTop,
-        left: targetName ? (e.offsetX - dropOffsetX)/editContentBoxWidth.value*100 : (e.x - dropOffsetX - dropScreenY)/editContentBoxWidth.value*100,
+        left: targetName ? targetLet : unTargetLeft,
         ...component.style
       }
       editComponentList.value.push(component)
@@ -117,7 +127,6 @@ export default {
     }
 
     function handleMouseDown(e) {
-      console.log(e, 6464646)
       e.preventDefault()
       e.stopPropagation()
     }
@@ -138,19 +147,19 @@ export default {
 
       let moveable = true, isMove = false
       const move = (moveEvent) => {
-        console.log(startLeft, 135)
         if(!moveable) return
         isMove = true //移动了
         const currX = moveEvent.clientX
         const currY = moveEvent.clientY
-        console.log(startY, startX, currY, currX, startTop, startLeft) 
         let newTop = currY - startY + startTop
-        let newLeft = (currX - startX + startLeft)/editContentBoxWidth.value*100
+        let newLeft = ((currX - startX + startLeft)/editContentBoxWidth.value*100).toFixed(0)
         let maxLeft = 100 - width
         newLeft = newLeft > maxLeft ? maxLeft : newLeft
+        newLeft = newLeft >= 0 ? newLeft : 0
+        newTop = newTop >= 0 ? newTop : 0 
         editComponentList.value[index].style = { 
-          top:  newTop >= 0 ? newTop : 0, 
-          left: newLeft >= 0 ? newLeft : 0,
+          top: newTop + (4-newTop%4), 
+          left: newLeft,
           height,
           width
         }
@@ -162,14 +171,11 @@ export default {
       const up = () => {
           document.removeEventListener('mousemove', move)
           document.removeEventListener('mouseup', up)
-          console.log(isMove, 16161616)
           if(isMove) {
             editHistory(editComponentList)
             isMove = false
           }
           
-          console.log(105555)
-          // needSave && this.$store.commit('recordSnapshot')
       }
       document.addEventListener('mousemove', move)
       document.addEventListener('mouseup', up)
@@ -188,10 +194,6 @@ export default {
       const startHeight = Number(pos.style.height)
       const startWidthPt = Number(pos.style.width)
       const startWidthPX = Number(pos.style.width)/100*editContentBoxWidth.value
-      console.log(pos.style.width, 186)
-      console.log(startWidthPX,'startWidthPX')
-      console.log(startWidthPt,'startWidthPt')
-      
       
       let isResize = false
       const move = (moveEvent) => {
@@ -201,24 +203,23 @@ export default {
         const disY = currY - startY
         const disX = currX - startX
         let newWidthPt = (startWidthPX + disX)/editContentBoxWidth.value*100
-        console.log(startWidthPX,disX, editContentBoxWidth.value, 1999)
         let MaxWidthPt = 100 - startLeft
-        console.log(newWidthPt, MaxWidthPt, 20022200202)
         newWidthPt = newWidthPt > MaxWidthPt ? MaxWidthPt : newWidthPt
+        newWidthPt = newWidthPt.toFixed(0)
         let style = { 
           top:  startTop, 
           left: startLeft,
           width: newWidthPt < 100 ? newWidthPt : 100,
-          height: startHeight + disY
+          height: (startHeight + disY) + (8-(startHeight + disY)%8)
         }
         editComponentList.value[index].style = { ...style }
       }
+      
       const up = () => {
         document.removeEventListener('mousemove', move)
         document.removeEventListener('mouseup', up)
         if(isResize) {
           editHistory(editComponentList)
-          console.log(editComponentList, 190190190)
         }
       }
       document.addEventListener('mousemove', move)
@@ -244,6 +245,7 @@ export default {
       componentList, 
       editComponentList, 
       handleDragStart,
+      handleDragEnd,
       handleDrop,
       handleDragOver,
       handleMouseDown,
@@ -268,18 +270,26 @@ export default {
     height 100vh
     flex 1
     overflow scroll
+    position relative
     .content
       background #fff
       min-height 220vh
       min-width 960px
       position relative
       overflow auto
+      .line-box
+        display inline-block
+        height 100%
+        width 1px
+        background #409EFF
+        position absolute      
+        z-index 99999
       .list
         background #eee
         height 72px
         // width 33%
         position absolute
-        border 1px solid #409EFF
+        border 4px solid #fff
         box-sizing border-box
         .point-box
           cursor se-resize
