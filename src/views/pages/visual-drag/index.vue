@@ -156,9 +156,9 @@ export default {
         let maxLeft = 100 - width
         newLeft = newLeft > maxLeft ? maxLeft : newLeft
         newLeft = newLeft >= 0 ? newLeft : 0
-        newTop = newTop >= 0 ? newTop : 0 
+        // newTop = newTop >= 0 ? newTop : 0 
         editComponentList.value[index].style = { 
-          top: newTop + (4-newTop%4), 
+          top: newTop <= 0 ? 0 : newTop + (4-newTop%4), 
           left: newLeft,
           height,
           width
@@ -289,7 +289,7 @@ export default {
         height 72px
         // width 33%
         position absolute
-        border 4px solid #fff
+        border 1px solid #fff
         box-sizing border-box
         .point-box
           cursor se-resize
