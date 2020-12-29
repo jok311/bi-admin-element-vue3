@@ -10,8 +10,9 @@
       <div id="edit-content-box" class="content" @drop="handleDrop($event)" @dragover="handleDragOver">
           <div class="line-box"></div>
           <div 
-            class="list" 
             v-for="(item, index) in editComponentList" 
+            :class="{list: true, active: index == activeIndex}" 
+            :data-clickin="true"
             :key="index"
             :style="{ 
               top: item.style.top+'px', 
@@ -19,10 +20,10 @@
               height: item.style.height+'px',
               width: item.style.width+'%',
             }"
-            
+            @click="selectIndex(index)"
             @mousedown="handleMouseDown(item, index)"
           >
-            <div class="point-box" @mousedown="handleMouseDownOnPoint(item, index)"><span class="point"></span></div>
+            <div :class="{'point-box': true, 'active-point-box': index == activeIndex}" @mousedown="handleMouseDownOnPoint(item, index)"><span class="point"></span></div>
             {{ index }}
             {{ item.label }}
             {{ editContentBoxWidth }}
@@ -46,27 +47,39 @@ export default {
         label: 'chart', 
         key: 'chart', 
         style: {
-          height: 72,
-          width: 33
+          height: 320,
+          width: 50
         }
       },
       {
         label: 'pie', 
         key: 'pie',
         style: {
-          height: 72,
-          width: 33
+          height: 320,
+          width: 50
         }        
       },
       {
         label: 'line', 
         key: 'line',
         style: {
-          height: 72,
-          width: 33
+          height: 320,
+          width: 50
         }        
       },
     ])
+
+    let activeIndex = ref(null)
+    function selectIndex(index) {
+      activeIndex.value = index
+    }
+
+    //点击非拖拽组件区域，隐藏active
+    document.addEventListener('click', (e) => {
+      if(!e.srcElement.dataset.clickin) {
+        activeIndex.value = ref(null)
+      }
+    })
 
     let editContentBox, editContentBoxWidth =ref(null); //编辑区域的宽高位置
     onMounted( () => {
@@ -92,12 +105,12 @@ export default {
 
     
     function handleDrop(e) {
-      // e.preventDefault()
-      // e.stopPropagation()
+      e.preventDefault()
+      e.stopPropagation()
       if( !e.dataTransfer.getData('index') ) return
       const component = { ...componentList.value[e.dataTransfer.getData('index')] } //深拷贝
       let targetName = e.target.id == 'edit-content-box'
-      let scrollTop = document.querySelector('#edit-content-box').scrollTop
+      let scrollTop = document.querySelector('.visual-drag-box .edit-box').scrollTop
 
       let targetLet = (e.offsetX - dropOffsetX)/editContentBoxWidth.value*100
       let unTargetLeft = (e.x - dropOffsetX - dropScreenY)/editContentBoxWidth.value*100
@@ -105,10 +118,11 @@ export default {
       targetLet = targetLet < maxLeft ? targetLet : maxLeft
       unTargetLeft = unTargetLeft < maxLeft ? unTargetLeft : maxLeft
       component['style'] = {
-        top: targetName ? e.offsetY - dropOffsetY + scrollTop : e.y - dropOffsetY + scrollTop,
+        top: targetName ? e.offsetY - dropOffsetY: e.y - dropOffsetY + scrollTop,
         left: targetName ? targetLet : unTargetLeft,
         ...component.style
       }
+      // console.log(scrollTop, "scrollTop", e.y - dropOffsetY + scrollTop, dropOffsetY, '11115555')
       editComponentList.value.push(component)
       window.localStorage.editComponentList = JSON.stringify(editComponentList.value)
       editHistory(editComponentList)
@@ -239,8 +253,12 @@ export default {
     }
 
 
+
+
     return {
       colWidth,
+      activeIndex,
+      selectIndex,
       editContentBoxWidth,
       componentList, 
       editComponentList, 
@@ -269,20 +287,23 @@ export default {
   .edit-box
     height 100vh
     flex 1
-    overflow scroll
+    overflow auto
     position relative
     .content
       background #fff
-      min-height 220vh
+      min-height 720vh
       min-width 960px
       position relative
-      overflow auto
+      overflow hidden
       .line-box
         display inline-block
         height 100%
         width 1px
         background #409EFF
         position absolute      
+        z-index 999999
+      .active
+        border 1px solid #409EFF !important
         z-index 99999
       .list
         background #eee
@@ -291,9 +312,11 @@ export default {
         position absolute
         border 1px solid #fff
         box-sizing border-box
+        .active-point-box
+          display inline-block !important
         .point-box
           cursor se-resize
-          display inline-block
+          display none
           position absolute
           width 12px
           height 12px
@@ -309,4 +332,21 @@ export default {
             position absolute
             right 2px
             bottom 2px
+
+
+// ::-webkit-scrollbar-track
+//   height 26px
+//   -webkit-box-shadow inset 0 0 5px rgba(0,0,0,0.2)
+//   border-radius 10px
+//   background rgba(235, 235, 235, 0.95)       
+
+
 </style>
+
+<style lang="stylus">
+::-webkit-scrollbar-thumb
+  border-radius 10px
+  -webkit-box-shadow inset 0 0 5px rgba(0,0,0,0.2)
+  background #878787   
+</style>
+
