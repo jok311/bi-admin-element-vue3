@@ -170,7 +170,6 @@ export default {
         let maxLeft = 100 - width
         newLeft = newLeft > maxLeft ? maxLeft : newLeft
         newLeft = newLeft >= 0 ? newLeft : 0
-        // newTop = newTop >= 0 ? newTop : 0 
         editComponentList.value[index].style = { 
           top: newTop <= 0 ? 0 : newTop + (4-newTop%4), 
           left: newLeft,
@@ -189,7 +188,6 @@ export default {
             editHistory(editComponentList)
             isMove = false
           }
-          
       }
       document.addEventListener('mousemove', move)
       document.addEventListener('mouseup', up)
@@ -253,12 +251,18 @@ export default {
     }
 
 
+    function deleteActive(index) {
+      console.log(index)
+    }
+
+
 
 
     return {
       colWidth,
       activeIndex,
       selectIndex,
+      deleteActive,
       editContentBoxWidth,
       componentList, 
       editComponentList, 
