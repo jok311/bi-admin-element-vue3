@@ -8,7 +8,6 @@
     <div class="edit-box">
       
       <div id="edit-content-box" class="content" @drop="handleDrop($event)" @dragover="handleDragOver">
-          <div class="line-box"></div>
           <div 
             v-for="(item, index) in editComponentList" 
             :class="{list: true, active: index == activeIndex}" 
@@ -23,6 +22,18 @@
             @click="selectIndex(index)"
             @mousedown="handleMouseDown(item, index)"
           >
+            <el-dropdown size="medium">
+              <span class="setting-box">
+                <div class="setting"><i class="el-icon-more"></i></div>
+              </span>
+              <el-dropdown-menu>
+                <el-dropdown-item><i class="el-icon-delete"></i>删除</el-dropdown-item>
+                <el-dropdown-item><i class="el-icon-document-copy"></i>复制</el-dropdown-item>
+                <el-dropdown-item><i class="el-icon-d-arrow-right"></i>导出</el-dropdown-item>
+                <el-dropdown-item><i class="el-icon-full-screen"></i>全屏</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>          
+            
             <div :class="{'point-box': true, 'active-point-box': index == activeIndex}" @mousedown="handleMouseDownOnPoint(item, index)"><span class="point"></span></div>
             {{ index }}
             {{ item.label }}
@@ -294,11 +305,12 @@ export default {
     overflow auto
     position relative
     .content
-      background #fff
-      min-height 720vh
+      background #f3f4f5
+      min-height 920vh
       min-width 960px
       position relative
       overflow hidden
+      // padding 0 12px      
       .line-box
         display inline-block
         height 100%
@@ -310,12 +322,13 @@ export default {
         border 1px solid #409EFF !important
         z-index 99999
       .list
-        background #eee
+        // background #eee
         height 72px
         // width 33%
         position absolute
-        border 1px solid #fff
+        border 1px solid #f3f4f5
         box-sizing border-box
+        background #fff
         .active-point-box
           display inline-block !important
         .point-box
@@ -324,7 +337,7 @@ export default {
           position absolute
           width 12px
           height 12px
-          background #eee
+          // background #eee
           right 0
           bottom 0
           .point
@@ -336,13 +349,32 @@ export default {
             position absolute
             right 2px
             bottom 2px
+        .setting-box
+          display none
+          position absolute
+          top 4px
+          right 4px
+          transform rotate(90deg)
+          color rgba(0,0,0,.42)
+          cursor pointer
+        &:hover
+          .setting-box
+            display inline-block
+            &:hover
+              opacity 0.618
 
 
-// ::-webkit-scrollbar-track
-//   height 26px
-//   -webkit-box-shadow inset 0 0 5px rgba(0,0,0,0.2)
-//   border-radius 10px
-//   background rgba(235, 235, 235, 0.95)       
+.visual-drag-box
+  /deep/ .el-dropdown
+    position absolute
+    top 4px
+    right 4px
+
+
+.el-dropdown-menu
+  min-width 82px
+  z-index 999991 !important
+
 
 
 </style>
