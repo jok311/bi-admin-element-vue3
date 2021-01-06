@@ -1,16 +1,16 @@
 <template>
   <div class="visual-drag-box">
     <div class="component-list">
-        <div v-for="(item, index) in componentList" :key="index" class="list" @dragend="handleDragEnd" @dragstart="handleDragStart" draggable="true" :data-index="index">
-            <span>{{ item.label }}</span>
-        </div>
+      <div v-for="(item, index) in componentList" :key="index" class="list" @dragend="handleDragEnd" @dragstart="handleDragStart" draggable="true" :data-index="index">
+          <span>{{ item.label }}</span>
+      </div>
     </div>
+
     <div class="edit-box">
-      
       <div id="edit-content-box" class="content" @drop="handleDrop($event)" @dragover="handleDragOver">
           <div 
             v-for="(item, index) in editComponentList" 
-            :class="{list: true, active: index == activeIndex}" 
+            :class="{list: true, active: activeIndex.indexOf(index) > -1}" 
             :data-clickin="true"
             :key="index"
             :style="{ 
@@ -38,8 +38,9 @@
             {{ index }}
             {{ item.label }}
             {{ editContentBoxWidth }}
+            <div contenteditable="false"></div>{{ item.style.width }} 
             ---
-            {{ item.style.width }}
+            <div class="edit-focus" contenteditable="true" @click.stop="activeIndex = []" @blur="handleBlur(index)" v-html="item.label"></div>
             ----
             {{ item.style.width/editContentBoxWidth }}
           </div>
@@ -50,7 +51,10 @@
 
 <script>
 import { ref, reactive, unref, watch, onMounted } from 'vue'
+import contenteditable from 'vue-contenteditable'
+
 export default {
+  components: { contenteditable },
   setup() {
     let colNum = 12, colWidth=ref(null), rowHeight = 150
     let componentList = ref([
@@ -80,15 +84,20 @@ export default {
       },
     ])
 
-    let activeIndex = ref(null)
+    let activeIndex = ref([])
+    let multiCheck = ref(false)
     function selectIndex(index) {
-      activeIndex.value = index
+      if(!multiCheck.value) {
+        activeIndex.value = [index]
+      }else{
+        activeIndex.value.push(index)
+      }
     }
 
     //点击非拖拽组件区域，隐藏active
     document.addEventListener('click', (e) => {
       if(!e.srcElement.dataset.clickin) {
-        activeIndex.value = ref(null)
+        activeIndex.value = []
       }
     })
 
@@ -116,8 +125,8 @@ export default {
 
     
     function handleDrop(e) {
-      e.preventDefault()
-      e.stopPropagation()
+      // e.preventDefault()
+      // e.stopPropagation()
       if( !e.dataTransfer.getData('index') ) return
       const component = { ...componentList.value[e.dataTransfer.getData('index')] } //深拷贝
       let targetName = e.target.id == 'edit-content-box'
@@ -142,7 +151,7 @@ export default {
     let dragable = true
     function handleDragOver(e) {
       e.preventDefault();
-      e.stopPropagation()
+      e.stopPropagation();
       // if( dragable ) {
       //   dragable = false
       //   setTimeout( () => {
@@ -152,14 +161,14 @@ export default {
     }
 
     function handleMouseDown(e) {
-      e.preventDefault()
-      e.stopPropagation()
+      // e.preventDefault()
+      // e.stopPropagation()
     }
 
     function handleMouseDown(item, index) {
       const downEvent = window.event
-      downEvent.stopPropagation()
-      downEvent.preventDefault()
+      // downEvent.stopPropagation()
+      // downEvent.preventDefault()
       const pos = item
       const startY = downEvent.clientY
       const startX = downEvent.clientX
@@ -266,6 +275,19 @@ export default {
       console.log(index)
     }
 
+    function handleBlur(index) {
+      const downEvent = window.event
+      editComponentList.value[index].label = downEvent.target.innerHTML
+      editHistory(editComponentList)
+    }
+
+    // watch( 
+    //   editComponentList.value, 
+    //   val => {
+    //     console.log(val)
+    //   },
+    //   {deep: true}
+    // )
 
 
 
@@ -282,7 +304,9 @@ export default {
       handleDrop,
       handleDragOver,
       handleMouseDown,
-      handleMouseDownOnPoint } 
+      handleMouseDownOnPoint,
+      handleBlur
+    } 
   }
 }
 </script>
@@ -319,7 +343,8 @@ export default {
         position absolute      
         z-index 999999
       .active
-        border 1px solid #409EFF !important
+        // border 1px solid #409EFF !important
+        border 2px dashed #409EFF !important
         z-index 99999
       .list
         // background #eee
@@ -374,6 +399,14 @@ export default {
 .el-dropdown-menu
   min-width 82px
   z-index 999991 !important
+
+.edit-focus
+  box-sizing border-box
+  &:focus
+    // border 1px solid red !important
+    background-color #fff
+    outline 2px dashed #409EFF
+
 
 
 
