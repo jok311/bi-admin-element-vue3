@@ -2,10 +2,7 @@
   <div class="visual-drag-box">
     <div class="component-list">
       <div v-for="(item, index) in componentList" :key="index" class="list" @dragend="handleDragEnd" @dragstart="handleDragStart" draggable="true" :data-index="index">
-        <div class="drag-chart-box">
-          <div class="svg-box"><svg-icon :icon-class="item.icon"/></div>
-          <div class="drag-title-box">{{ item.label }}</div>
-        </div>
+          <span>{{ item.label }}</span>
       </div>
     </div>
 
@@ -17,8 +14,6 @@
             :data-clickin="true"
             :key="index"
             :style="{
-              top: item.style.top+'px', 
-              left: item.style.left+'%',
               height: item.style.height+'px',
               width: item.style.width+'%',
             }"
@@ -37,7 +32,7 @@
               </el-dropdown-menu>
             </el-dropdown>          
             
-            <div :class="{'point-box': true, 'active-point-box': activeIndex.indexOf(index) > -1}" @mousedown="handleMouseDownOnPoint(item, index)"><span class="point"></span></div>
+            <div :class="{'point-box': true, 'active-point-box': index == activeIndex}" @mousedown="handleMouseDownOnPoint(item, index)"><span class="point"></span></div>
             {{ index }}
             {{ item.label }}
             {{ editContentBoxWidth }}
@@ -62,27 +57,24 @@ export default {
     let colNum = 12, colWidth=ref(null), rowHeight = 150
     let componentList = ref([
       {
-        label: '折线图', 
-        key: 'line',
-        icon: 'line2',
-        style: {
-          height: 320,
-          width: 50
-        }        
-      },      
-      {
-        label: '柱状图', 
+        label: 'chart', 
         key: 'chart', 
-        icon: 'bar',
         style: {
           height: 320,
           width: 50
         }
       },
       {
-        label: '饼状图', 
+        label: 'pie', 
         key: 'pie',
-        icon: 'piechart',
+        style: {
+          height: 320,
+          width: 50
+        }        
+      },
+      {
+        label: 'line', 
+        key: 'line',
         style: {
           height: 320,
           width: 50
@@ -321,35 +313,21 @@ export default {
 .visual-drag-box
   display flex
   .component-list
-    width 112px
+    width 120px
     height 92vh
-    color #303133
-    background #ffffff
     .list
-      margin 4px
-      background #f6f8f9
-      // height 32px
-      // border 2px solid #f6f8f9
-      box-sizing border-box
+      background #eee
+      height 72px
       // min-width 72px
+      margin 4px
       cursor copy
-      .drag-chart-box
-        text-align center
-        padding 12px 0
-        .drag-title-box
-          padding-top 4px
-          font-size 16px
-        .svg-box
-          font-size 28px
-      &:hover
-        border 2px solid #409EFF
   .edit-box
     height 100vh
     flex 1
     overflow auto
     position relative
     .content
-      background #f6f8f9
+      background #f3f4f5
       min-height 920vh
       min-width 960px
       position relative
@@ -367,11 +345,12 @@ export default {
         border 2px dashed #409EFF !important
         z-index 99999
       .list
+        display inline-block
         // background #eee
         height 72px
         // width 33%
-        position absolute
-        border 4px solid #f6f8f9
+        position relative
+        border 1px solid #f3f4f5
         box-sizing border-box
         background #fff
         .active-point-box
@@ -436,6 +415,6 @@ export default {
 ::-webkit-scrollbar-thumb
   border-radius 10px
   -webkit-box-shadow inset 0 0 5px rgba(0,0,0,0.2)
-  background #f6f8f9
+  background #878787   
 </style>
 

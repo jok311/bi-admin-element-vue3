@@ -171,6 +171,28 @@ const router = createRouter({
         },
       ]
     },
+    {
+      component: Layout,
+      children: [
+        {
+          path: '/water-fall/index',
+          component: () => import('../views/pages/water-fall/index.vue'),
+          name: 'water-fall',
+          meta: { title: 'water-fall', affix: true }
+        },
+      ]
+    },
+    {
+      component: Layout,
+      children: [
+        {
+          path: '/icons/index',
+          component: () => import('../views/pages/icons/index.vue'),
+          name: 'icons',
+          meta: { title: 'icons', affix: true }
+        },
+      ]
+    },
 
   ]
 })

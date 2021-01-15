@@ -44,6 +44,18 @@
           <span>visual-drag-index</span>
         </template>        
       </el-menu-item>    
+      <el-menu-item index="/icons/index">
+        <template #title>
+          <i class="el-icon-menu" />
+          <span>icons-index</span>
+        </template>        
+      </el-menu-item>    
+      <el-menu-item index="/water-fall/index">
+        <template #title>
+          <i class="el-icon-menu" />
+          <span>water-fall-index</span>
+        </template>        
+      </el-menu-item>    
       <el-menu-item index="/interact/index">
         <template #title>
           <i class="el-icon-menu" />
