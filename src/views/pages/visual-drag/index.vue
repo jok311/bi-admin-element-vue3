@@ -22,8 +22,8 @@
               height: item.style.height+'px',
               width: item.style.width+'%',
             }"
-            @click="selectIndex(index)"
             @mousedown="handleMouseDown(item, index)"
+            @click="selectIndex(index)"
           >
             <el-dropdown size="medium">
               <span class="setting-box">
@@ -38,16 +38,29 @@
             </el-dropdown>          
             
             <div :class="{'point-box': true, 'active-point-box': activeIndex.indexOf(index) > -1}" @mousedown="handleMouseDownOnPoint(item, index)"><span class="point"></span></div>
-            {{ index }}
-            {{ item.label }}
-            {{ editContentBoxWidth }}
-            <div contenteditable="false"></div>{{ item.style.width }} 
-            ---
-            <div class="edit-focus" contenteditable="true" @click.stop="activeIndex = []" @blur="handleBlur(index)" v-html="item.label"></div>
-            ----
-            {{ item.style.width/editContentBoxWidth }}
+            <div class="chart-title-box">
+              <!-- <span class="chart-icon-box"><svg-icon :icon-class="item.icon"/></span> -->
+              <div class="edit-focus" contenteditable="true" @click.stop="activeIndex = []" @blur="handleBlur(index)" v-html="item.label"></div>
+              <span class="tips-box">
+                <el-tooltip class="item" effect="dark" :content="item.label" placement="top-start">
+                  <svg-icon style="color: #999;" icon-class="tooltips"/>
+                </el-tooltip>                
+              </span>
+            </div>
+            <!-- {{ index }} -->
+            <!-- <div class="svg-box"><svg-icon :icon-class="item.icon"/></div> -->
+            <!-- {{ item.label }} -->
+            <!-- {{ editContentBoxWidth }} -->
+            <!-- <div contenteditable="false"></div>{{ item.style.width }}  -->
+            <!-- --- -->
+            <!-- ---- -->
+            <!-- {{ item.style.width/editContentBoxWidth }} -->
           </div>
       </div>    
+    </div>
+
+    <div class="props-box">
+      <props></props>
     </div>
   </div>
 </template>
@@ -55,9 +68,9 @@
 <script>
 import { ref, reactive, unref, watch, onMounted } from 'vue'
 import contenteditable from 'vue-contenteditable'
-
+import props from './components/props.vue'
 export default {
-  components: { contenteditable },
+  components: { contenteditable, props },
   setup() {
     let colNum = 12, colWidth=ref(null), rowHeight = 150
     let componentList = ref([
@@ -83,6 +96,15 @@ export default {
         label: '饼状图', 
         key: 'pie',
         icon: 'piechart',
+        style: {
+          height: 320,
+          width: 50
+        }        
+      },
+      {
+        label: '表格', 
+        key: 'table',
+        icon: 'table2',
         style: {
           height: 320,
           width: 50
@@ -131,8 +153,8 @@ export default {
 
     
     function handleDrop(e) {
-      // e.preventDefault()
-      // e.stopPropagation()
+      e.preventDefault()
+      e.stopPropagation()      
       if( !e.dataTransfer.getData('index') ) return
       const component = { ...componentList.value[e.dataTransfer.getData('index')] } //深拷贝
       let targetName = e.target.id == 'edit-content-box'
@@ -152,6 +174,7 @@ export default {
       editComponentList.value.push(component)
       window.localStorage.editComponentList = JSON.stringify(editComponentList.value)
       editHistory(editComponentList)
+
     }
 
     let dragable = true
@@ -166,15 +189,10 @@ export default {
       // }
     }
 
-    function handleMouseDown(e) {
-      // e.preventDefault()
-      // e.stopPropagation()
-    }
-
     function handleMouseDown(item, index) {
       const downEvent = window.event
-      // downEvent.stopPropagation()
-      // downEvent.preventDefault()
+      downEvent.stopPropagation()
+      downEvent.preventDefault()           
       const pos = item
       const startY = downEvent.clientY
       const startX = downEvent.clientX
@@ -202,6 +220,7 @@ export default {
           height,
           width
         }
+   
         // moveable = false
         // setTimeout(() => {
         //   moveable = true
@@ -210,6 +229,9 @@ export default {
       const up = () => {
           document.removeEventListener('mousemove', move)
           document.removeEventListener('mouseup', up)
+          const downEvent = window.event
+          downEvent.stopPropagation()
+          downEvent.preventDefault()          
           if(isMove) {
             editHistory(editComponentList)
             isMove = false
@@ -320,9 +342,10 @@ export default {
 <style lang="stylus" scoped>
 .visual-drag-box
   display flex
+  color #303133
   .component-list
     width 112px
-    height 92vh
+    height 100vh
     color #303133
     background #ffffff
     .list
@@ -351,7 +374,7 @@ export default {
     .content
       background #f6f8f9
       min-height 920vh
-      min-width 960px
+      min-width 720px
       position relative
       overflow hidden
       // padding 0 12px      
@@ -374,6 +397,11 @@ export default {
         border 4px solid #f6f8f9
         box-sizing border-box
         background #fff
+        // background-image url('../../../icons/svg/line2.svg')
+        // background-image url('https://img.alicdn.com/tfs/TB1RcL8B1L2gK0jSZFmXXc7iXXa-464-224.png')
+        background-repeat no-repeat
+        background-size contain
+        background-position center
         .active-point-box
           display inline-block !important
         .point-box
@@ -420,12 +448,20 @@ export default {
   min-width 82px
   z-index 999991 !important
 
-.edit-focus
-  box-sizing border-box
-  &:focus
-    // border 1px solid red !important
-    background-color #fff
-    outline 2px dashed #409EFF
+.chart-title-box
+  padding 12px 18px
+  border-bottom 1px solid #f6f8f9
+  .chart-icon-box
+    padding 0 4px
+  .edit-focus
+    display inline-block
+    // min-width 50%
+    box-sizing border-box
+    padding-right 4px
+    &:focus
+      // border 1px solid red !important
+      background-color #fff
+      outline 2px dashed #409EFF
 
 
 
