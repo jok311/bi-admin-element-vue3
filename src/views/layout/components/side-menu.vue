@@ -44,6 +44,12 @@
           <span>visual-drag-index</span>
         </template>        
       </el-menu-item>    
+      <el-menu-item index="/position-drag/index">
+        <template #title>
+          <i class="el-icon-menu" />
+          <span>position-drag-index</span>
+        </template>        
+      </el-menu-item>    
       <el-menu-item index="/icons/index">
         <template #title>
           <i class="el-icon-menu" />

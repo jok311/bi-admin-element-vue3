@@ -175,6 +175,17 @@ const router = createRouter({
       component: Layout,
       children: [
         {
+          path: '/position-drag/index',
+          component: () => import('../views/pages/position-drag/index.vue'),
+          name: 'position-drag',
+          meta: { title: 'position-drag', affix: true }
+        },
+      ]
+    },
+    {
+      component: Layout,
+      children: [
+        {
           path: '/water-fall/index',
           component: () => import('../views/pages/water-fall/index.vue'),
           name: 'water-fall',

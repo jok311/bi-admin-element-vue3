@@ -1,7 +1,14 @@
 <template>
   <div class="visual-drag-box">
     <div class="component-list">
-      <div v-for="(item, index) in componentList" :key="index" class="list" @dragend="handleDragEnd" @dragstart="handleDragStart" draggable="true" :data-index="index">
+      <div 
+        v-for="(item, index) in componentList" 
+        :key="index" 
+        class="list" 
+        @dragend="handleDragEnd" 
+        @dragstart="handleDragStart"
+        draggable="true" 
+        :data-index="index">
         <div class="drag-chart-box">
           <div class="svg-box"><svg-icon :icon-class="item.icon"/></div>
           <div class="drag-title-box">{{ item.label }}</div>
@@ -10,34 +17,39 @@
     </div>
 
     <div class="edit-box">
-      <div id="edit-content-box" class="content" @drop="handleDrop($event)" @dragover="handleDragOver">
+      <div id="edit-content-box" class="content" 
+        @drop.stop="handleCloneDrop($event)"
+        @dragover="handleDragOver"
+      >
           <div 
             v-for="(item, index) in editComponentList" 
             :class="{list: true, active: activeIndex.indexOf(index) > -1}" 
             :data-clickin="true"
             :key="index"
             :style="{
-              top: item.style.top+'px', 
-              left: item.style.left+'%',
               height: item.style.height+'px',
               width: item.style.width+'%',
             }"
-            @mousedown="handleMouseDown(item, index)"
+            @dragstart="onSortDragStart(item, index)"
+            @dragend="onSortDragEnd"            
+            @drop="handleSortDrop(item, index)"
+            @mousedown="handleCloneMouseDown(item, index)"
             @click="selectIndex(index)"
+            draggable="true"
           >
             <el-dropdown size="medium">
               <span class="setting-box">
                 <div class="setting"><i class="el-icon-more"></i></div>
               </span>
               <el-dropdown-menu>
-                <el-dropdown-item><i class="el-icon-delete"></i>删除</el-dropdown-item>
                 <el-dropdown-item><i class="el-icon-document-copy"></i>复制</el-dropdown-item>
                 <el-dropdown-item><i class="el-icon-d-arrow-right"></i>导出</el-dropdown-item>
                 <el-dropdown-item><i class="el-icon-full-screen"></i>全屏</el-dropdown-item>
+                <el-dropdown-item @click.stop="deleteItem(index)"><i class="el-icon-delete"></i>删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>          
             
-            <div :class="{'point-box': true, 'active-point-box': activeIndex.indexOf(index) > -1}" @mousedown="handleMouseDownOnPoint(item, index)"><span class="point"></span></div>
+            <div :class="{'point-box': true, 'active-point-box': activeIndex.indexOf(index) > -1}" @mousedown="handleCloneMouseDownOnPoint(item, index)"><span class="point"></span></div>
             <div class="chart-title-box">
               <!-- <span class="chart-icon-box"><svg-icon :icon-class="item.icon"/></span> -->
               <div class="edit-focus" contenteditable="true" @click.stop="activeIndex = []" @blur="handleBlur(index)" v-html="item.label"></div>
@@ -152,7 +164,7 @@ export default {
     }
 
     
-    function handleDrop(e) {
+    function handleCloneDrop(e) {
       e.preventDefault()
       e.stopPropagation()      
       if( !e.dataTransfer.getData('index') ) return
@@ -189,7 +201,8 @@ export default {
       // }
     }
 
-    function handleMouseDown(item, index) {
+    function handleCloneMouseDown(item, index) {
+      return
       const downEvent = window.event
       downEvent.stopPropagation()
       downEvent.preventDefault()           
@@ -241,7 +254,7 @@ export default {
       document.addEventListener('mouseup', up)
     }
 
-    function handleMouseDownOnPoint(item, index) {
+    function handleCloneMouseDownOnPoint(item, index) {
       const downEvent = window.event
       downEvent.stopPropagation()
       downEvent.preventDefault()
@@ -263,7 +276,8 @@ export default {
         const disY = currY - startY
         const disX = currX - startX
         let newWidthPt = (startWidthPX + disX)/editContentBoxWidth.value*100
-        let MaxWidthPt = 100 - startLeft
+        // let MaxWidthPt = 100 - startLeft
+        let MaxWidthPt = 100
         newWidthPt = newWidthPt > MaxWidthPt ? MaxWidthPt : newWidthPt
         newWidthPt = newWidthPt.toFixed(0)
         let style = { 
@@ -299,14 +313,47 @@ export default {
     }
 
 
-    function deleteActive(index) {
+    function deleteItem(index) {
       console.log(index)
+      editComponentList.value.splice(index, 1)
+      editHistory(editComponentList)
     }
 
     function handleBlur(index) {
       const downEvent = window.event
       editComponentList.value[index].label = downEvent.target.innerHTML
       editHistory(editComponentList)
+    }
+
+
+    let dragIndex = ref(null)
+    function onSortDragStart(item, index) {
+      const downEvent = window.event
+      downEvent.target.style.opacity = .5
+      dragIndex.value = index
+      // console.log(downEvent, 'onSortDragStart')
+    }
+
+    function onSortDragOver(e) {
+      // console.log(e, 'onSortDragOver')
+    }
+    function onSortDragEnd(e) {
+      // console.log(e, 'onSortDragEnd')
+      e.target.style.opacity = ''
+    }
+    function handleSortDrop(item, index) {
+      const downEvent = window.event
+      var dragItem = editComponentList.value[dragIndex.value];
+      if( dragIndex.value > index ) {
+        editComponentList.value.splice(index, 0, dragItem);
+        editComponentList.value.splice(dragIndex.value + 1, 1);
+      }else{
+        editComponentList.value.splice(index + 1, 0, dragItem);
+        editComponentList.value.splice(dragIndex.value, 1);        
+      }
+
+      editHistory(editComponentList)
+      
     }
 
     // watch( 
@@ -323,17 +370,23 @@ export default {
       colWidth,
       activeIndex,
       selectIndex,
-      deleteActive,
+      deleteItem,
       editContentBoxWidth,
       componentList, 
       editComponentList, 
+
+      onSortDragStart,
+      onSortDragOver,
+      onSortDragEnd,
+      handleSortDrop,
+
       handleDragStart,
       handleDragEnd,
-      handleDrop,
+      handleCloneDrop,
       handleDragOver,
-      handleMouseDown,
-      handleMouseDownOnPoint,
-      handleBlur
+      handleCloneMouseDown,
+      handleCloneMouseDownOnPoint,
+      handleBlur,
     } 
   }
 }
@@ -390,10 +443,11 @@ export default {
         border 2px dashed #409EFF !important
         z-index 99999
       .list
+        display inline-block
         // background #eee
         height 72px
         // width 33%
-        position absolute
+        position relative
         border 4px solid #f6f8f9
         box-sizing border-box
         background #fff
